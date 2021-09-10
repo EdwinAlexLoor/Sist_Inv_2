@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block contenido %}
+
+    <title> Crear Bodega </title>
+
+    <div class="b-example-divider">
+        <h1 class="text-center">
+            <svg class="bi me-2" width="40" height="32">
+                <use xlink:href="#bi bi-gem"/>
+            </svg>
+            Agregar a bodega
+        </h1>
+    </div>
+
+    <div class="text-center  py-lg-3">
+        {% load static %}
+        <img class="mb-4" src="{% static 'portada_alcos.jpeg' %}" alt="" width="1080" height="300">
+    </div>
+
+    <div class="b-example-divider">
+        <h1 class="text-center">
+            <svg class="bi me-2" width="40" height="32">
+                <use xlink:href="#bi bi-pin"/>
+            </svg>
+            Ingreso Bodega
+        </h1>
+    </div>
+
+        <form class="text-center py-lg-3 "  method="post">
+            {% csrf_token %}
+            {{ bodega.as_p }}
+            <input type="submit" value="Guardar Datos"/>
+        </form>
+
+
+        <div class="b-example-divider py-lg-3"></div>
+{% endblock %}

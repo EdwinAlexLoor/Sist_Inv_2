@@ -270,7 +270,7 @@ def crear_egreso_detalle (request):
           egreso_detalleForm = Egreso_detalleForm()
     else:
          egreso_detalleForm = Egreso_detalleForm ()
-    return render(request, "egreso_detalle/crear_egreso_detalle.html",{'egreso_detalle_ls': egreso_detalleForm})
+    return render(request, "egreso_detalle/crear_egreso_detalle.html",{'egreso_detalle_form': egreso_detalleForm})
 
 def eliminar_egreso_detalle (request,id):
     if request.method == "POST":

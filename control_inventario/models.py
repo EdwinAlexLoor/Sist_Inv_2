@@ -277,7 +277,7 @@ class ingreso_detalle (models.Model):
     estado = models.IntegerField ( default=1 )
 
     class Meta :
-        db_table = "inv_detalle_ingreso"
+        db_table = "inv_ingreso_detale"
         verbose_name = "Ingreso Detalle"
         verbose_name_plural = "Ingresos Detalles"
         ordering = ['fecha_creacion']
@@ -300,7 +300,7 @@ class Egreso_detalle ( models.Model ) :
     estado = models.IntegerField ( default=1 )
 
     class Meta :
-        db_table = "inv_detalle_ingreso"
+        db_table = "inv_egreso_detalle"
         verbose_name = "Egreso Detalle"
         verbose_name_plural = "Egresos Detalles"
         ordering = ['fecha_creacion']

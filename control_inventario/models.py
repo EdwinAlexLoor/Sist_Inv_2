@@ -1,31 +1,66 @@
 from django.db import models
 
 # Create your models here.
-class bodega (models.Model):
-    nombre = models.CharField(max_length=50)
-    descripcion = models.CharField(max_length=256)
+class CategoriaBodega(models.Model):
+    nombre = models.CharField(max_length=125)
+    descripcion = models.CharField(max_length=250)
 
-    usuario_creacion = models.CharField ( max_length=15 )
-    usuario_modificacion = models.CharField ( max_length=15 )
-    fecha_creacion = models.DateTimeField ( auto_now_add=True )
-    fecha_modificacion = models.DateTimeField ( auto_now=True )
-    estado = models.IntegerField(default= 1)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_modificacion = models.DateTimeField(auto_now=True)
+    usuario_creacion = models.CharField(max_length=15)
+    usuario_modificacion = models.CharField(max_length=15)
+    estado = models.IntegerField(default=1)
 
     class Meta:
-        db_table = 'tp_bodega'
+        db_table = "inv_categoria_bodega"
+        verbose_name = "Categoria_bodega"
+        verbose_name_plural = "Categorias_bodegas"
+        ordering = ['fecha_creacion']
 
-class Categoria_producto ( models.Model ) :
-    nombre = models.CharField ( max_length= 50 )
-    descripcion = models.CharField ( max_length=256)
+    def __str__(self):
+        return '{}'.format(self.nombre)
 
-    usuario_creacion = models.CharField ( max_length=15 )
-    usuario_modificacion = models.CharField ( max_length=15 )
+
+class bodega (models.Model):
+    nombre = models.CharField ( max_length=125 )
+    descripcion = models.CharField ( max_length=250 )
+
+    categoria = models.OneToOneField ( CategoriaBodega , on_delete=models.CASCADE )
+
     fecha_creacion = models.DateTimeField ( auto_now_add=True )
     fecha_modificacion = models.DateTimeField ( auto_now=True )
-    estado = models.IntegerField(default= 1)
+    usuario_creacion = models.CharField ( max_length=15 )
+    usuario_modificacion = models.CharField ( max_length=15 )
+    estado = models.IntegerField ( default=1 )
 
     class Meta :
-        db_table = 'tp_categoria_producto'
+        db_table = "inv_bodega"
+        verbose_name = "Bodega"
+        verbose_name_plural = "Bodegas"
+        ordering = ['fecha_creacion']
+
+    def __str__( self ) :
+        return '{}'.format ( self.nombre )
+
+
+class Categoria_producto ( models.Model ) :
+    nombre = models.CharField ( max_length=150 )
+    descripcion = models.CharField ( max_length=250 )
+
+    fecha_creacion = models.DateTimeField ( auto_now_add=True )
+    fecha_modificacion = models.DateTimeField ( auto_now=True )
+    usuario_creacion = models.CharField ( max_length=15 )
+    usuario_modificacion = models.CharField ( max_length=15 )
+    estado = models.IntegerField ( default=1 )
+
+    class Meta :
+        db_table = "inv_categoria_producto"
+        verbose_name = "Categoria Producto"
+        verbose_name_plural = "Categorias Productos"
+        ordering = ['fecha_creacion']
+
+    def __str__( self ) :
+        return '{}'.format ( self.nombre )
 
 
 class Marca (models.Model):
@@ -38,21 +73,14 @@ class Marca (models.Model):
     estado = models.IntegerField ( default=1 )
 
     class Meta :
-        db_table = 'tp_marca'
+        db_table = "inv_marca"
+        verbose_name = "Marca"
+        verbose_name_plural = "Marcas"
+        ordering = ['fecha_creacion']
 
+    def __str__( self ) :
+        return '{}'.format ( self.nombre )
 
-class unidad_medida (models.Model):
-    nombre = models.CharField(max_length=50)
-    medida = models.CharField(max_length=100)
-
-    usuario_creacion = models.CharField(max_length=15)
-    usuario_modificacion =models.CharField(max_length=15)
-    fecha_creacion =models.DateTimeField(auto_now_add=True)
-    fecha_modificacion =models.DateTimeField(auto_now=True)
-    estado = models.IntegerField(default=1)
-
-    class Meta:
-        db_table = 'tp_unidad_medida'
 
 class rol_persona (models.Model):
     cargo = models.CharField(max_length=50)
@@ -64,40 +92,59 @@ class rol_persona (models.Model):
     estado = models.IntegerField(default=1)
 
     class Meta:
-        db_table = 'tp_rol_persona'
+        db_table = 'inv_rol_persona'
         verbose_name = "Rol Persona"
         verbose_name_plural = "Roles De Personas"
+        ordering = ['fecha_creacion']
 
     def __str__(self):
         return "{}".format(self.cargo)
 
 
 class ingreso_cabecera (models.Model):
-    codigo = models.CharField(max_length=50)
-    descripcion = models.CharField(max_length=250)
+    codigo_documento = models.CharField ( max_length=15 )
+    fecha_documento = models.DateTimeField ()
+    usuario_recibe = models.CharField ( max_length=15 )
+    usuario_entrega = models.CharField ( max_length=15 )
+    total_ingreso = models.DecimalField ( max_digits=16 , decimal_places=4 )
 
-    usuario_creacion = models.CharField(max_length=15)
-    usuario_modificacion = models.CharField(max_length=15)
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
-    fecha_modificacion = models.DateTimeField(auto_now_add=True)
-    estado = models.IntegerField(default=1)
+    fecha_creacion = models.DateTimeField ( auto_now_add=True )
+    fecha_modificacion = models.DateTimeField ( auto_now=True )
+    usuario_creacion = models.CharField ( max_length=15 )
+    usuario_modificacion = models.CharField ( max_length=15 )
+    estado = models.IntegerField ( default=1 )
 
     class Meta :
-        db_table = 'tp_ingreso_cabecera'
+        db_table = "inv_ingreso_cabecera"
+        verbose_name = "Ingreso Cabecera "
+        verbose_name_plural = "Ingresos Cabeceras"
+        ordering = ['fecha_creacion']
+
+    def __str__( self ) :
+        return '{}'.format ( self.codigo_documento )
 
 
 class Egreso_cabecera ( models.Model ) :
-    codigo = models.CharField ( max_length= 50 )
-    descripcion = models.CharField ( max_length=256)
+    codigo_documento = models.CharField ( max_length=15 )
+    fecha_documento = models.DateTimeField ()
+    usuario_entrega = models.CharField ( max_length=15 )
+    usuario_recibe = models.CharField ( max_length=15 )
+    total_egreso = models.DecimalField ( max_digits=16 , decimal_places=4 )
 
-    usuario_creacion = models.CharField ( max_length=15 )
-    usuario_modificacion = models.CharField ( max_length=15 )
     fecha_creacion = models.DateTimeField ( auto_now_add=True )
     fecha_modificacion = models.DateTimeField ( auto_now=True )
-    estado = models.IntegerField(default= 1)
+    usuario_creacion = models.CharField ( max_length=15 )
+    usuario_modificacion = models.CharField ( max_length=15 )
+    estado = models.IntegerField ( default=1 )
 
     class Meta :
-        db_table = 'tp_egreso_cabecera'
+        db_table = "inv_cabecera_egreso"
+        verbose_name = "Egreso Cabecera"
+        verbose_name_plural = "Egresos Cabeceras"
+        ordering = ['fecha_creacion']
+
+    def __str__( self ) :
+        return '{}'.format ( self.codigo_documento )
 
 class Persona (models.Model):
     nombre = models.CharField(max_length=50)
@@ -115,9 +162,10 @@ class Persona (models.Model):
     estado = models.IntegerField(default= 1)
 
     class Meta:
-        db_table = 'tp_persona'
+        db_table = 'inv_persona'
         verbose_name = "Persona"
         verbose_name_plural = "Personas"
+        ordering = ['fecha_creacion']
 
     def __str__(self):
         return "{}{}{} ".format(self.nombre, "    ", self.apellido)
@@ -125,17 +173,25 @@ class Persona (models.Model):
 
 
 class producto (models.Model):
-    nombre = models.CharField(max_length=50)
-    descripcion = models.CharField(max_length=100)
+    codigo = models.CharField ( max_length=20 )
+    nombre = models.CharField ( max_length=150 )
+    descripcion = models.CharField ( max_length=250 )
+    categoria_producto = models.ManyToManyField ( Categoria_producto )
 
-    usuario_creacion = models.CharField(max_length=15)
-    usuario_modificacion =models.CharField(max_length=15)
-    fecha_creacion =models.DateTimeField(auto_now_add=True)
-    fecha_modificacion =models.DateTimeField(auto_now=True)
-    estado = models.IntegerField(default=1)
+    fecha_creacion = models.DateTimeField ( auto_now_add=True )
+    fecha_modificacion = models.DateTimeField ( auto_now=True )
+    usuario_creacion = models.CharField ( max_length=15 )
+    usuario_modificacion = models.CharField ( max_length=15 )
+    estado = models.IntegerField ( default=1 )
 
-    class Meta:
-        db_table = 'tp_producto'
+    class Meta :
+        db_table = "inv_producto"
+        verbose_name = "Producto"
+        verbose_name_plural = "Productos"
+        ordering = ['fecha_creacion']
+
+    def __str__( self ) :
+        return '{}'.format ( self.nombre )
 
 class Devolucion ( models.Model ) :
     detalle = models.CharField ( max_length= 256 )
@@ -148,7 +204,13 @@ class Devolucion ( models.Model ) :
     estado = models.IntegerField(default= 1)
 
     class Meta :
-        db_table = 'tp_devolucion'
+        db_table = "inv_devolucion"
+        verbose_name = "Devolucion"
+        verbose_name_plural = "Devoluciones"
+        ordering = ['fecha_creacion']
+
+    def __str__( self ) :
+        return '{}'.format ( self.detalle )
 
 class proveedor (models.Model):
     nombre = models.CharField(max_length=50)
@@ -165,48 +227,83 @@ class proveedor (models.Model):
     estado = models.IntegerField ( default=1 )
 
     class Meta :
-        db_table = 'tp_proveedor'
+        db_table = "inv_proveedor"
+        verbose_name = "Proovedor"
+        verbose_name_plural = "Proovedores"
+        ordering = ['fecha_creacion']
+
+    def __str__( self ) :
+        return '{}'.format ( self.nombre )
 
 
 
 class Bodega_producto (models.Model):
-    cantidad = models.CharField(max_length= 5)
-    unidad  = models.CharField(max_length=10)
+    Bodega = models.ForeignKey ( bodega , on_delete=models.CASCADE )
+    Producto = models.ForeignKey ( producto , on_delete=models.CASCADE )
+    cantidad_existencia = models.IntegerField ()  # STOCK
+    precio_compra = models.DecimalField ( max_digits=16 , decimal_places=4 )
+    precio_venta = models.DecimalField ( max_digits=16 , decimal_places=4 )
+    stock_maximo = models.IntegerField ()
+    stock_minimo = models.IntegerField ()
 
-    usuario_creacion = models.CharField(max_length=15)
-    usuario_modificacion =models.CharField(max_length=15)
-    fecha_creacion =models.DateTimeField(auto_now_add=True)
-    fecha_modificacion =models.DateTimeField(auto_now=True)
-    estado = models.IntegerField(default= 1)
+    fecha_creacion = models.DateTimeField ( auto_now_add=True )
+    fecha_modificacion = models.DateTimeField ( auto_now=True )
+    usuario_creacion = models.CharField ( max_length=15 )
+    usuario_modificacion = models.CharField ( max_length=15 )
+    estado = models.IntegerField ( default=1 )
 
-    class Meta:
-        db_table = 'tp_bodega_producto'
+    class Meta :
+        db_table = "inv_bodegaproducto"
+        verbose_name = "Bodega Producto"
+        verbose_name_plural = "Bodegas Productos"
+        ordering = ['fecha_creacion']
+
+    def __str__( self ) :
+        return '{}'.format ( self.Bodega )
 
 
 
 class ingreso_detalle (models.Model):
-    nombre = models.CharField(max_length=50)
-    descripcion = models.CharField(max_length=250)
+    Ingreso_cabecera = models.OneToOneField ( ingreso_cabecera , on_delete=models.CASCADE )
+    Producto = models.ForeignKey ( producto , on_delete=models.CASCADE )
+    cantidad_ingreso = models.IntegerField ()
+    precio_ingreso = models.DecimalField ( max_digits=16 , decimal_places=4 )
+    sub_total = models.DecimalField ( max_digits=16 , decimal_places=4 )
 
-    usuario_creacion = models.CharField(max_length=15)
-    usuario_modificacion = models.CharField(max_length=15)
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
-    fecha_modificacion = models.DateTimeField(auto_now_add=True)
-    estado = models.IntegerField(default=1)
+    fecha_creacion = models.DateTimeField ( auto_now_add=True )
+    fecha_modificacion = models.DateTimeField ( auto_now=True )
+    usuario_creacion = models.CharField ( max_length=15 )
+    usuario_modificacion = models.CharField ( max_length=15 )
+    estado = models.IntegerField ( default=1 )
 
-    class Meta:
-        db_table = 'tp_ingreso_detalle'
+    class Meta :
+        db_table = "inv_detalle_ingreso"
+        verbose_name = "Ingreso Detalle"
+        verbose_name_plural = "Ingresos Detalles"
+        ordering = ['fecha_creacion']
+
+    def __str__( self ) :
+        return '{}'.format ( self.Ingreso_cabecera )
 
 
 class Egreso_detalle ( models.Model ) :
-    cantidad = models.CharField(max_length= 50)
-    precio = models.CharField(max_length=5)
+    egreso_cabecera = models.OneToOneField ( Egreso_cabecera , on_delete=models.CASCADE )
+    Producto = models.ForeignKey ( producto , on_delete=models.CASCADE )
+    cantidad_egreso = models.IntegerField ()
+    precio_egreso = models.DecimalField ( max_digits=16 , decimal_places=4 )
+    sub_total = models.DecimalField ( max_digits=16 , decimal_places=4 )
 
-    usuario_creacion = models.CharField ( max_length=15 )
-    usuario_modificacion = models.CharField ( max_length=15 )
     fecha_creacion = models.DateTimeField ( auto_now_add=True )
     fecha_modificacion = models.DateTimeField ( auto_now=True )
-    estado = models.IntegerField(default= 1)
+    usuario_creacion = models.CharField ( max_length=15 )
+    usuario_modificacion = models.CharField ( max_length=15 )
+    estado = models.IntegerField ( default=1 )
 
     class Meta :
-        db_table = 'tp_egreso_detalle'
+        db_table = "inv_detalle_ingreso"
+        verbose_name = "Egreso Detalle"
+        verbose_name_plural = "Egresos Detalles"
+        ordering = ['fecha_creacion']
+
+    def __str__( self ) :
+        return '{}'.format ( self.egreso_cabecera )

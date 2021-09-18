@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">d
+<html lang="es">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -163,6 +163,7 @@
                     </a>
                     <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownNavLink">
                         <li><a class="dropdown-item" href="{% url 'consultar_bodega' %}">Bodega</a></li>
+                        <li><a class="dropdown-item" href="{% url 'consultar_categoria_bodega' %}">Categoria Bodega</a></li>
                         <li><a class="dropdown-item" href="{% url 'consultar_bodega_producto' %}">Bodega Productos</a>
                         </li>
                     </ul>
@@ -212,8 +213,6 @@
                         <li><a class="dropdown-item" href="{% url 'consultar_categoria_producto' %}">Categoria
                             Producto</a></li>
                         <li><a class="dropdown-item" href="{% url 'consultar_marca' %}">Marca</a></li>
-                        <li><a class="dropdown-item" href="{% url 'consultar_unidad_medida' %}">Unidad De
-                            Medidas</a></li>
                     </ul>
 
                     <a href="#"

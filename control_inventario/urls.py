@@ -105,12 +105,12 @@ urlpatterns = [
     path ( 'eliminar_stock/' , views.eliminar_stock , name="eliminar_stock" ) ,
     path ( 'modificar_stock/' , views.modificar_stock , name="modificar_stock" ) ,
 
-    ##----------- Ruta Para unidad medida -----------##
+    ##----------- Ruta Para _categoria_bodega -----------##
 
-    path ( 'consultar_unidad_medida/' , views.consultar_unidad_medida, name="consultar_unidad_medida" ) ,
-    path ( 'crear_unidad_medida/' , views.crear_unidad_medida, name="crear_unidad_medida" ) ,
-    path ( 'eliminar_unidad_medida/<int:id>' , views.eliminar_unidad_medida, name="eliminar_unidad_medida" ) ,
-    path ( 'modificar_unidad_medida/<int:id>' , views.modificar_unidad_medida, name="modificar_unidad_medida" ) ,
+    path ( 'consultar_categoria_bodega/' , views.consultar_categoria_bodega, name="consultar_categoria_bodega" ) ,
+    path ( 'crear_categoria_bodega/' , views.crear_categoria_bodega, name="crear_categoria_bodega" ) ,
+    path ( 'eliminar_categoria_bodega/<int:id>' , views.eliminar_categoria_bodega, name="eliminar_categoria_bodega" ) ,
+    path ( 'modificar_categoria_bodega/<int:id>' , views.modificar_categoria_bodega, name="modificar_categoria_bodega" ) ,
 
     ##----------- Ruta Para marca -----------##
 

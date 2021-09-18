@@ -1,10 +1,10 @@
 from django.shortcuts import render , HttpResponse , redirect , get_object_or_404
-from .forms import PersonaForm , BodegaForm, Rol_personaForm, Categoria_productoForm, Bodega_productoForm, \
+from .forms import  PersonaForm , BodegaForm, Rol_personaForm, Categoria_productoForm, Bodega_productoForm, \
     DevolucionForm, Egreso_cabeceraForm, MarcaForm, Egreso_detalleForm, Ingreso_cabeceraForm, Ingreso_detalleForm, \
-    ProductoForm, ProveedorForm, Unidad_medidaForm
+    ProductoForm, ProveedorForm
 from .models import Persona, rol_persona, bodega, Categoria_producto, Bodega_producto, \
     Devolucion, Egreso_cabecera, Marca, Egreso_detalle, ingreso_cabecera, ingreso_detalle, producto , \
-    proveedor, unidad_medida
+    proveedor
 
 
 # Create your views here.
@@ -26,7 +26,8 @@ def base2 (request):
 ##----------------------------- BODEGGA --------------##
 
 def consultar_bodega( request ) :
-    return render ( request , "bodega/consultar_bodega.html" )
+    Bodega = bodega.objects.all()
+    return render ( request , "bodega/consultar_bodega.html" , {'bodega_ls' : Bodega} )
 
 
 def crear_bodega( request ) :
@@ -73,7 +74,7 @@ def modificar_bodega (request,id):
 ##----------------------------- BODEGA_PRODUCTO --------------##
 
 def consultar_bodega_producto (request):
-    bodega_producto1 = bodega.objects.all()
+    bodega_producto1 =Bodega_producto.objects.all()
     return render(request, "bodega_producto/consultar_bodega_producto.html",{'bodega_producto_ls': bodega_producto1})
 
 def crear_bodega_producto (request):
@@ -123,6 +124,7 @@ def consultar_categoria_producto (request):
     return render(request, "categoria_producto/consultar_categoria_producto.html",{'categoria_producto_ls': categoria_producto1})
 
 def crear_categoria_producto (request):
+
     if request.method == "POST":
         categoria_productoForm = Categoria_productoForm(request.POST)
         if categoria_productoForm.is_valid():
@@ -132,7 +134,7 @@ def crear_categoria_producto (request):
            categoria_productoForm = Categoria_productoForm()
     else:
          categoria_productoForm = Categoria_productoForm ()
-    return render(request, "categoria_producto/crear_categoria_producto.html",{'categoria_producto_ls': categoria_productoForm})
+    return render(request, "categoria_producto/crear_categoria_producto.html",{'categoria_productoForm': categoria_productoForm})
 
 def eliminar_categoria_producto (request,id):
     if request.method == "POST":
@@ -145,7 +147,7 @@ def eliminar_categoria_producto (request,id):
     else:
         categoria_producto1 = get_object_or_404(Categoria_producto, pk=id)
         categoria_productoForm = Categoria_productoForm(request.POST or None, instance=categoria_producto1)
-    return render(request, "categoria_producto/eliminar_categoria_producto.html",{'categoria_producto_ls': categoria_productoForm})
+    return render(request, "categoria_producto/eliminar_categoria_producto.html",{'categoria_productoForm': categoria_productoForm})
 
 def modificar_categoria_producto (request,id):
     if request.method == "POST":
@@ -159,7 +161,7 @@ def modificar_categoria_producto (request,id):
     else:  ##GET
         categoria_producto1 = get_object_or_404(Categoria_producto, pk=id)
         categoria_productoForm = Categoria_productoForm(request.POST or None, instance=categoria_producto1)
-    return render(request, "categoria_producto/modificar_categoria_producto.html",{'categoria_producto_ls': categoria_productoForm})
+    return render(request, "categoria_producto/modificar_categoria_producto.html",{'categoria_productoForm': categoria_productoForm})
 
 
 ##----------------------------- DEVOLUCION --------------##
@@ -606,48 +608,18 @@ def modificar_stock( request ) :
 ##----------------------------- unidad de medida -------------##
 
 
-def consultar_unidad_medida (request):
-    unidad_medida1 = unidad_medida.objects.all()
-    return render(request, "unidad_medida/consultar_unidad_medida.html",{'unidad_media_ls':unidad_medida1})
+def consultar_categoria_bodega (request):
+    return render(request, "categoria_bodega/consultar_categoria_bodega.html")
 
-def crear_unidad_medida (request):
-    if request.method == "POST":
-        unidad_medidaForm = Unidad_medidaForm(request.POST)
-        if unidad_medidaForm.is_valid():
-            unidad_medidaForm.save()
-            return redirect('consultar_unidad_medida')
-        else:
-            unidad_medidaForm = Unidad_medidaForm()
-    else:
-         unidad_medidaForm = Unidad_medidaForm ()
-    return render(request, "unidad_medida/crear_unidad_medida.html",{'unidad_medida_ls':unidad_medidaForm})
+def crear_categoria_bodega(request):
+    return render(request, "categoria_bodega/crear_categoria_bodega.html")
 
-def eliminar_unidad_medida(request,id):
-    if request.method == "POST":
-        unidad_medida1 = get_object_or_404(unidad_medida, pk=id)
-        unidad_medidaForm = Unidad_medidaForm(request.POST or None, instance=unidad_medida1)
-        if unidad_medidaForm.is_valid():
-            unidad_medida1.estado = 0
-            unidad_medida1.save()
-            return redirect('consultar_unidad_medida')
-    else:
-        unidad_medida1 = get_object_or_404(unidad_medida, pk=id)
-        unidad_medidaForm = Unidad_medidaForm(request.POST or None, instance=unidad_medida1)
-    return render(request, "unidad_medida/eliminar_unidad_medida.html",{'unidad_medida_ls':unidad_medidaForm})
+def eliminar_categoria_bodega(request,id):
 
-def modificar_unidad_medida (request,id):
-    if request.method == "POST":
-        unidad_medida1 = get_object_or_404(unidad_medida, pk=id)
-        unidad_medidaForm = Unidad_medidaForm(request.POST or None, instance=unidad_medida1)
-        if unidad_medidaForm.is_valid():
-            unidad_medidaForm.save()
-            return redirect('consultar_unidad_medida')
-        else:
-            unidad_medidaForm = Unidad_medidaForm(instance=unidad_medida)
-    else:  ##GET
-        unidad_medida1 = get_object_or_404(unidad_medida, pk=id)
-        unidad_medidaForm = Unidad_medidaForm(request.POST or None, instance=unidad_medida1)
-    return render(request, "unidad_medida/modificar_unidad_medida.html",{'unidad_medida_ls':unidad_medidaForm})
+    return render(request, "categoria_bodega/eliminar_categoria_bodega.html")
+
+def modificar_categoria_bodega(request,id):
+    return render(request, "categoria_bodega/modificar_categoria_bodega.html")
 
 
 ##----------------------------- unidad de marca -------------##

@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class CategoriaBodega(models.Model):
     nombre = models.CharField(max_length=125)
-    descripcion = models.CharField(max_length=250)
+    descripcion_catbog = models.CharField(max_length=250)
 
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)

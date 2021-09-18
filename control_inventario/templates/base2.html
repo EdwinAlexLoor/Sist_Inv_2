@@ -130,6 +130,10 @@
         <path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L4.047 3.339 8 7.293l3.954-3.954L9.049.435zm3.61 3.611L8.708 8l3.954 3.954 2.904-2.905c.58-.58.58-1.519 0-2.098l-2.904-2.905zm-.706 8.614L8 8.708l-3.954 3.954 2.905 2.904c.58.58 1.519.58 2.098 0l2.905-2.904zm-8.614-.706L7.292 8 3.339 4.046.435 6.951c-.58.58-.58 1.519 0 2.098l2.904 2.905z"/>
     </symbol>
 
+    <symbol id="bi bi-search" viewBox="0 0 16 16">
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+    </symbol>
+
 </svg>
 
 
@@ -138,11 +142,11 @@
     <div class="b-example-divider ">
 
 
-        <h1 class="text-center font-monospace "> "Sistema De Control De Inventario".</h1>
+        <h1 class="text-center fst-italic "> "Sistema De Control De Inventario".</h1>
     </div>
 
     <nav class="py-2 bg-light border-bottom">
-        <div class="px-3 py-2 text-white ">
+        <div class="px-3 py-2 text-white fst-italic ">
             <div class="dropdown">
                 <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                     <a href="/"
@@ -150,7 +154,7 @@
                         <svg class="bi me-2" width="40" height="32">
                             <use xlink:href="#bi bi-x-diamond-fill"/>
                         </svg>
-                        <span class="fs-2 font-monospace ">Ferreteria AlCo´S</span>
+                        <span class="fs-2 fst-italic ">Ferreteria AlCo´S</span>
                     </a>
 
                     <a href="#"
@@ -163,7 +167,8 @@
                     </a>
                     <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownNavLink">
                         <li><a class="dropdown-item" href="{% url 'consultar_bodega' %}">Bodega</a></li>
-                        <li><a class="dropdown-item" href="{% url 'consultar_categoria_bodega' %}">Categoria Bodega</a></li>
+                        <li><a class="dropdown-item" href="{% url 'consultar_categoria_bodega' %}">Categoria Bodega</a>
+                        </li>
                         <li><a class="dropdown-item" href="{% url 'consultar_bodega_producto' %}">Bodega Productos</a>
                         </li>
                     </ul>
@@ -270,7 +275,7 @@
     </nav>
 
     <div class="b-example-divider">
-        <h1 class="text-center font-monospace">
+        <h1 class="text-center fst-italic">
             <svg class="bi me-2" width="40" height="32">
                 <use xlink:href="#bi bi-gem"/>
             </svg>

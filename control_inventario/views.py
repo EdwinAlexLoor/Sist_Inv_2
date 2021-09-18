@@ -1,7 +1,7 @@
 from django.shortcuts import render , HttpResponse , redirect , get_object_or_404
 from .forms import  PersonaForm , BodegaForm, Rol_personaForm, Categoria_productoForm, Bodega_productoForm, \
     DevolucionForm, Egreso_cabeceraForm, MarcaForm, Egreso_detalleForm, Ingreso_cabeceraForm, Ingreso_detalleForm, \
-    ProductoForm, ProveedorForm, Categoria_bodegaForm
+    ProductoForm, ProveedorForm, Categoria_bodegaForm, BuscarPersonaForm, BuscarRolPersonaForm
 from .models import Persona, rol_persona, bodega, Categoria_producto, Bodega_producto, \
     Devolucion, Egreso_cabecera, Marca, Egreso_detalle, ingreso_cabecera, ingreso_detalle, producto , \
     proveedor, CategoriaBodega
@@ -54,7 +54,7 @@ def eliminar_bodega (request,id):
     else:
         bodega1 = get_object_or_404(bodega, pk=id)
         bodegaForm = BodegaForm(request.POST or None, instance=bodega1)
-    return render(request, "bodega/eliminar_bodega.html",{'bodega_ls': bodegaForm})
+    return render(request, "bodega/eliminar_bodega.html",{'bodega_e': bodegaForm})
 
 def modificar_bodega (request,id):
     if request.method == "POST":
@@ -68,7 +68,7 @@ def modificar_bodega (request,id):
     else:  ##GET
         bodega1 = get_object_or_404(bodega, pk=id)
         bodegaForm = BodegaForm(request.POST or None, instance=bodega1)
-    return render(request, "bodega/modificar_bodega.html",{'bodega_ls': bodegaForm})
+    return render(request, "bodega/modificar_bodega.html",{'bodega_m': bodegaForm})
 
 
 ##----------------------------- BODEGA_PRODUCTO --------------##
@@ -147,7 +147,7 @@ def eliminar_categoria_producto (request,id):
     else:
         categoria_producto1 = get_object_or_404(Categoria_producto, pk=id)
         categoria_productoForm = Categoria_productoForm(request.POST or None, instance=categoria_producto1)
-    return render(request, "categoria_producto/eliminar_categoria_producto.html",{'categoria_productoForm': categoria_productoForm})
+    return render(request, "categoria_producto/eliminar_categoria_producto.html",{'categoria_producto_e': categoria_productoForm})
 
 def modificar_categoria_producto (request,id):
     if request.method == "POST":
@@ -161,7 +161,7 @@ def modificar_categoria_producto (request,id):
     else:  ##GET
         categoria_producto1 = get_object_or_404(Categoria_producto, pk=id)
         categoria_productoForm = Categoria_productoForm(request.POST or None, instance=categoria_producto1)
-    return render(request, "categoria_producto/modificar_categoria_producto.html",{'categoria_productoForm': categoria_productoForm})
+    return render(request, "categoria_producto/modificar_categoria_producto.html",{'categoria_producto_m': categoria_productoForm})
 
 
 ##----------------------------- DEVOLUCION --------------##
@@ -398,9 +398,20 @@ def modificar_ingreso_detalle (request,id):
 
 
 def consultar_persona( request ) :
-    persona= Persona.objects.all ()
+    buscarpersonaform = BuscarPersonaForm()
+    persona = None
 
-    return render ( request , "persona/consultar_persona.html" , {'persona_ls' : persona} )
+    if request.method =="POST":
+        buscarpersonaform = BuscarPersonaForm(request.POST or None)
+        if buscarpersonaform.is_valid():
+            desde = buscarpersonaform.cleaned_data['desde']
+            hasta = buscarpersonaform.cleaned_data['hasta']
+
+            persona = Persona.objects.filter ( fecha_creacion__range=(desde , hasta) )
+    else:
+        persona= Persona.objects.all ()
+
+    return render ( request , "persona/consultar_persona.html" , {'persona_ls' : persona, 'buscarpersona' : buscarpersonaform } )
 
 
 def crear_persona( request ) :
@@ -463,7 +474,7 @@ def crear_producto(request):
             productoForm = ProductoForm()
     else:
          productoForm = ProductoForm ()
-    return render(request, "producto/crear_producto.html",{'producto_ls': productoForm})
+    return render(request, "producto/crear_producto.html",{'productoform': productoForm})
 
 def eliminar_producto(request,id):
     if request.method == "POST":
@@ -476,7 +487,7 @@ def eliminar_producto(request,id):
     else:
         producto1 = get_object_or_404(producto, pk=id)
         productoForm = ProductoForm(request.POST or None, instance=producto1)
-    return render(request, "producto/eliminar_producto.html",{'producto_ls': productoForm})
+    return render(request, "producto/eliminar_producto.html",{'producto_e': productoForm})
 
 def modificar_producto(request,id):
     if request.method == "POST":
@@ -490,7 +501,7 @@ def modificar_producto(request,id):
     else:  ##GET
         producto1 = get_object_or_404(producto, pk=id)
         productoForm = ProductoForm(request.POST or None, instance=producto1)
-    return render(request, "producto/modificar_producto.html",{'producto_ls': productoForm})
+    return render(request, "producto/modificar_producto.html",{'producto_m': productoForm})
 
 
 ##----------------------------- PROVEEDOR --------------##
@@ -543,8 +554,19 @@ def modificar_proveedor(request,id):
 
 
 def consultar_rol_persona (request):
-    rol_persona1 = bodega.objects.all()
-    return render(request, "rol_persona/consultar_rol_persona.html",{'rol_persona_ls': rol_persona1})
+    buscar_rolpersonaform = BuscarPersonaForm ()
+    rol_persona1 = None
+
+    if request.method == "POST" :
+        buscar_rolpersonaform = BuscarPersonaForm ( request.POST or None )
+        if buscar_rolpersonaform.is_valid () :
+            desde = buscar_rolpersonaform.cleaned_data['desde']
+            hasta = buscar_rolpersonaform.cleaned_data['hasta']
+
+            rol_persona1 = rol_persona.objects.filter ( fecha_creacion__range=(desde , hasta) )
+    else :
+        rol_persona1 = rol_persona.objects.all ()
+    return render(request, "rol_persona/consultar_rol_persona.html",{'rol_persona_ls': rol_persona1, 'buscar_rolpersona': buscar_rolpersonaform})
 
 def crear_rol_persona (request):
     if request.method == "POST":
@@ -556,7 +578,7 @@ def crear_rol_persona (request):
             rol_personaForm = Rol_personaForm()
     else:
          rol_personaForm = Rol_personaForm ()
-    return render(request, "rol_persona/crear_rol_persona.html",{'rol_personaform': rol_personaForm})
+    return render(request, "rol_persona/crear_rol_persona.html",{'rolpersona': rol_personaForm})
 
 def eliminar_rol_persona (request,id):
     if request.method == "POST":
@@ -569,7 +591,7 @@ def eliminar_rol_persona (request,id):
     else:
         rol_persona1 = get_object_or_404(rol_persona, pk=id)
         rol_personaForm = Rol_personaForm(request.POST or None, instance=rol_persona1)
-    return render(request, "rol_persona/eliminar_rol_persona.html",{'rol_personaform': rol_personaForm})
+    return render(request, "rol_persona/eliminar_rol_persona.html",{'rol_persona_e': rol_personaForm})
 
 def modificar_rol_persona (request,id):
     if request.method == "POST":
@@ -583,7 +605,7 @@ def modificar_rol_persona (request,id):
     else:  ##GET
         rol_persona1 = get_object_or_404(rol_persona, pk=id)
         rol_personaForm = Rol_personaForm(request.POST or None, instance=rol_persona1)
-    return render(request, "rol_persona/modificar_rol_persona.html",{'rol_persona_ls': rol_personaForm})
+    return render(request, "rol_persona/modificar_rol_persona.html",{'rol_persona_m': rol_personaForm})
 
 
 ##----------------------------- ROL stock -------------##
@@ -625,18 +647,19 @@ def crear_categoria_bodega(request):
     return render(request, "categoria_bodega/crear_categoria_bodega.html",{'categoriabodegaForm': categoriabodegaform})
 
 def eliminar_categoria_bodega(request,id):
+
     if request.method == "POST":
-        categoriabodega = get_object_or_404(CategoriaBodega, pk=id)
-        categoriabodegaform = Categoria_bodegaForm(request.POST or None, instance=categoriabodega)
+        categoriabodega1 = get_object_or_404(CategoriaBodega, pk=id)
+        categoriabodegaform = Categoria_bodegaForm(request.POST or None, instance=categoriabodega1)
         if categoriabodegaform.is_valid():
-            categoriabodega.estado = 0
-            categoriabodega.save()
+            categoriabodega1.estado = 0
+            categoriabodega1.save()
             return redirect('consultar_categoria_bodega')
     else:
-        categoriabodega = get_object_or_404(CategoriaBodega, pk=id)
-        categoriabodegaform = ProductoForm(request.POST or None, instance=categoriabodega)
+        categoriabodega1 = get_object_or_404(CategoriaBodega, pk=id)
+        categoriabodegaform = ProductoForm(request.POST or None, instance=categoriabodega1)
 
-    return render(request, "categoria_bodega/eliminar_categoria_bodega.html",{'categoriabodegaForm': categoriabodegaform})
+    return render(request, "categoria_bodega/eliminar_categoria_bodega.html",{'categoria_bodega_elim': categoriabodegaform})
 
 def modificar_categoria_bodega(request,id):
     if request.method == "POST":
@@ -650,7 +673,7 @@ def modificar_categoria_bodega(request,id):
     else :  ##GET
         categoriabodega = get_object_or_404(CategoriaBodega, pk=id)
         categoriabodegaform = Categoria_bodegaForm(request.POST or None, instance = categoriabodega)
-    return render(request, "categoria_bodega/modificar_categoria_bodega.html",{'categoriabodegaForm': categoriabodegaform})
+    return render(request, "categoria_bodega/modificar_categoria_bodega.html",{'categoria_bodega_mod': categoriabodegaform})
 
 
 ##----------------------------- unidad de marca -------------##

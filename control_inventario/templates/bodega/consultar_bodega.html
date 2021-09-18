@@ -24,6 +24,7 @@
             <tr>
                 <th scope="col">Nombre</th>
                 <th scope="col">Descripcion</th>
+                <th scope="col">Categoria Bodega</th>
                 <th scope="col">Fecha Creacion</th>
                 <th scope="col">Fecha Modificacion</th>
                 <th scope="col">Modificar</th>
@@ -35,7 +36,8 @@
                 {% if bodega.estado == 1 %}
                     <tr>
                         <td> {{ bodega.nombre }} </td>
-                        <td> {{ bodega.apellido }} </td>
+                        <td> {{ bodega.descripcion }} </td>
+                        <td> {{ bodega.categoria }} </td>
                         <td> {{ bodega.fecha_creacion|date }} </td>
                         <td> {{ bodega.fecha_modificacion |date }} </td>
                         <td><a href='{% url 'modificar_bodega' bodega.id %}'>

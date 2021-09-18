@@ -1,16 +1,41 @@
 from django.forms import ModelForm
-from .models import Persona, bodega, Bodega_producto, Categoria_producto, Devolucion, Egreso_detalle, \
-    Egreso_cabecera, Marca , rol_persona, ingreso_cabecera, ingreso_detalle, producto, proveedor, CategoriaBodega
+from django import forms
+from .models import CategoriaBodega, bodega, Categoria_producto,Marca, rol_persona, ingreso_cabecera, Egreso_cabecera,\
+    Persona, producto, Devolucion, proveedor,Bodega_producto, ingreso_detalle, Egreso_detalle
+
+class BuscarRolPersonaForm(forms.Form):
+    desde = forms.DateTimeField(label="Desde", required=True, widget=forms.DateInput(format=('%Y-%m-%d'),
+                                                                                     attrs={
+                                                                                         'placeholder': 'Select a date',
+                                                                                         'type': 'date', 'size': 40}))
+
+    hasta = forms.DateTimeField(label="Hasta", required=True, widget=forms.DateInput(format=('%Y-%m-%d'),
+                                                                                     attrs={
+                                                                                         'placeholder': 'Select a date',
+                                                                                         'type': 'date', 'size': 40}))
+
+
+class BuscarPersonaForm(forms.Form):
+    desde = forms.DateTimeField(label="Desde", required=True, widget=forms.DateInput(format=('%Y-%m-%d'),
+                                                                                     attrs={
+                                                                                         'placeholder': 'Select a date',
+                                                                                         'type': 'date', 'size': 40}))
+
+    hasta = forms.DateTimeField(label="Hasta", required=True, widget=forms.DateInput(format=('%Y-%m-%d'),
+                                                                                     attrs={
+                                                                                         'placeholder': 'Select a date',
+                                                                                         'type': 'date', 'size': 40}))
+
 
 class Categoria_bodegaForm (ModelForm):
     class Meta:
         model = CategoriaBodega
-        fields = ['nombre', 'descripcion' ]
+        fields = ['nombre', 'descripcion_catbog' ]
 
 class BodegaForm (ModelForm):
     class Meta:
         model = bodega
-        fields = ['nombre', 'descripcion' ]
+        fields = ['nombre', 'descripcion', 'categoria' ]
 
 
 class Categoria_productoForm (ModelForm):
@@ -82,11 +107,3 @@ class Egreso_detalleForm (ModelForm):
     class Meta:
         model = Egreso_detalle
         fields = ['egreso_cabecera', 'Producto', 'cantidad_egreso', 'precio_egreso', 'sub_total']
-
-
-
-
-
-
-
-

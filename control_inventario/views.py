@@ -342,7 +342,7 @@ def crear_ingreso_cabecera (request):
           ingreso_cabeceraForm = Ingreso_cabeceraForm()
     else:
          ingreso_cabeceraForm = Ingreso_cabeceraForm ()
-    return render(request, "ingreso_cabecera/crear_ingreso_cabecera.html",{'ingreso_cabecera': ingreso_cabeceraForm})
+    return render(request, "ingreso_cabecera/crear_ingreso_cabecera.html",{'ingreso_cabecera_c': ingreso_cabeceraForm})
 
 @login_required(None, "", 'login')
 def eliminar_ingreso_cabecera (request,id):
@@ -356,7 +356,7 @@ def eliminar_ingreso_cabecera (request,id):
     else:
         ingreso_cabecera1 = get_object_or_404(ingreso_cabecera, pk=id)
         ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST or None, instance=ingreso_cabecera1)
-    return render(request, "ingreso_cabecera/eliminar_ingreso_cabecera.html",{'ingreso_cabecera': ingreso_cabeceraForm})
+    return render(request, "ingreso_cabecera/eliminar_ingreso_cabecera.html",{'ingreso_cabecera_e': ingreso_cabeceraForm})
 
 @login_required(None, "", 'login')
 def modificar_ingreso_cabecera (request,id):
@@ -371,7 +371,7 @@ def modificar_ingreso_cabecera (request,id):
     else:  ##GET
         ingreso_cabecera1 = get_object_or_404(ingreso_cabecera, pk=id)
         ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST or None, instance=ingreso_cabecera1)
-    return render(request, "ingreso_cabecera/modificar_ingreso_cabecera.html",{'ingreso_cabecera': ingreso_cabeceraForm})
+    return render(request, "ingreso_cabecera/modificar_ingreso_cabecera.html",{'ingreso_cabecera_m': ingreso_cabeceraForm})
 
 
 ##----------------------------- INGRESO DETALLE--------------##

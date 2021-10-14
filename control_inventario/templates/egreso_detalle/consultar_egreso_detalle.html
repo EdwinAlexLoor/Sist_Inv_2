@@ -1,6 +1,6 @@
 {% extends "base2.html" %}
 {% block inicio %}
-    <title> Consultar Persona </title>
+    <title> Consultar Egreso Detalle </title>
 
 
     <div class="b-example-divider">
@@ -8,22 +8,44 @@
             <svg class="bi me-2" width="40" height="32">
                 <use xlink:href="#bi bi-pin"/>
             </svg>
-            "Listar Persona"
+            "Listar Egreso Detalle"
         </h1>
     </div>
-    <div class="container-fluid py-lg-2">
-        <a href='{% url 'crear_egreso_detalle' %}' class="btn btn-primary btn-lg" type="button">
+
+    <div class="d-flex justify-content-between py-lg-4 fst-italic">
+        <div>
+            {#            left#}
+           <a href='{% url 'crear_egreso_detalle' %}' class="btn btn-primary btn-lg" type="button">
             <svg class="bi me-2" width="32" height="20">
                 <use xlink:href="#bi bi-plus-square-fill"/>
             </svg>
             Crear Egreso Detalle </a>
+        </div>
+
+        <div>
+            {#            right#}
+            <form action="{% url 'consultar_egreso_detalle' %}" method="post">
+                {% csrf_token %}
+                {{ buscarpersona.as_table }}
+                <button type="submit">
+                    <svg class="bi me-2" width="40" height="20">
+                        <use xlink:href="#bi bi-search"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
     </div>
+
     <div class="table-responsive">
         <table class="table table-striped table-sm">
             <thead>
+
             <tr>
-                <th scope="col">Cantidad</th>
-                <th scope="col">Precio</th>
+                <th scope="col">Eg. Cabecera</th>
+                <th scope="col">Producto</th>
+                <th scope="col">Cant. Egreso</th>
+                <th scope="col">Precio Egreso</th>
+                <th scope="col">Sub Total</th>
                 <th scope="col">Fecha Creacion</th>
                 <th scope="col">Fecha Modificacion</th>
                 <th scope="col">Modificar</th>
@@ -32,18 +54,21 @@
             </thead>
             <tbody>
             {% for egresod in egreso_detalle_ls %}
-                {% if persona.estado == 1 %}
+                {% if egresod.estado == 1 %}
                     <tr>
-                        <td> {{ egresod.cantidad }} </td>
-                        <td> {{ egresod.precio }} </td>
+                        <td> {{ egresod.egreso_cabecera }} </td>
+                        <td> {{ egresod.Producto }} </td>
+                        <td> {{ egresod.cantidad_egreso }} </td>
+                        <td> {{ egresod.precio_egreso }} </td>
+                        <td> {{ egresod.sub_total }} </td>
                         <td> {{ egresod.fecha_creacion }} </td>
                         <td> {{ egresod.fecha_modificacion }} </td>
-                        <td><a href='{% url 'modificar_egreso_detalle' egreso_detalle_ls.id %}'>
+                        <td><a href='{% url 'modificar_egreso_detalle' egresod.id %}'>
                             <svg class="bi me-2" width="32" height="20">
                                 <use xlink:href="#bi bi-pencil-square"/>
                             </svg>
                         </a></td>
-                        <td><a href='{% url 'eliminar_egreso_detalle' egreso_detalle_ls.id %}'>
+                        <td><a href='{% url 'eliminar_egreso_detalle' egresod.id %}'>
                             <svg class="bi me-2" width="32" height="20">
                                 <use xlink:href="#bi bi-trash"/>
                             </svg>

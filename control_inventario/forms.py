@@ -83,7 +83,7 @@ class ProductoForm (ModelForm):
 class DevolucionForm (ModelForm):
     class Meta:
         model = Devolucion
-        fields = ['detalle' ]
+        fields = ['detalle'  ]
 
 
 class ProveedorForm (ModelForm):

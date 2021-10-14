@@ -7,7 +7,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.index),
     ##path('ruta1/', views.MiPrimeraFuncion),
     path('ruta1/', views.base2),
 

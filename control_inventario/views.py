@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import render , HttpResponse , redirect , get_object_or_404
 from .forms import  PersonaForm , BodegaForm, Rol_personaForm, Categoria_productoForm, Bodega_productoForm, \
     DevolucionForm, Egreso_cabeceraForm, MarcaForm, Egreso_detalleForm, Ingreso_cabeceraForm, Ingreso_detalleForm, \
@@ -13,23 +15,23 @@ def saludo( request ) :
 
 
 def index( request ) :
-    return render ( request , "index.html" )
+    return render ( request , "registration/login.html" )
 
 
 #def MiPrimeraFuncion( request ) :
    # return render ( request , "base.html" )
-
+@login_required(None, "", 'login')
 def base2 (request):
     return render (request, "base2.html")
 
 
 ##----------------------------- BODEGGA --------------##
-
+@login_required(None, "", 'login')
 def consultar_bodega( request ) :
     Bodega = bodega.objects.all()
     return render ( request , "bodega/consultar_bodega.html" , {'bodega_ls' : Bodega} )
 
-
+@login_required(None, "", 'login')
 def crear_bodega( request ) :
     if request.method == "POST" :
         bodegaForm = BodegaForm ( request.POST )
@@ -42,7 +44,7 @@ def crear_bodega( request ) :
         bodegaForm = BodegaForm ()
     return render ( request , "bodega/crear_bodega.html" , {'bodegaForm' : bodegaForm} )
 
-
+@login_required(None, "", 'login')
 def eliminar_bodega (request,id):
     if request.method == "POST":
         bodega1 = get_object_or_404(bodega, pk=id)
@@ -56,6 +58,7 @@ def eliminar_bodega (request,id):
         bodegaForm = BodegaForm(request.POST or None, instance=bodega1)
     return render(request, "bodega/eliminar_bodega.html",{'bodega_e': bodegaForm})
 
+@login_required(None, "", 'login')
 def modificar_bodega (request,id):
     if request.method == "POST":
         bodega1 = get_object_or_404(bodega, pk=id)
@@ -72,11 +75,12 @@ def modificar_bodega (request,id):
 
 
 ##----------------------------- BODEGA_PRODUCTO --------------##
-
+@login_required(None, "", 'login')
 def consultar_bodega_producto (request):
     bodega_producto1 =Bodega_producto.objects.all()
     return render(request, "bodega_producto/consultar_bodega_producto.html",{'bodega_producto_ls': bodega_producto1})
 
+@login_required(None, "", 'login')
 def crear_bodega_producto (request):
     if request.method == "POST":
         bodega_productoForm = Bodega_productoForm(request.POST)
@@ -89,6 +93,7 @@ def crear_bodega_producto (request):
          bodega_productoForm = Bodega_productoForm ()
     return render(request, "bodega_producto/crear_bodega_producto.html",{'bodega_producto_ls': bodega_productoForm})
 
+@login_required(None, "", 'login')
 def eliminar_bodega_producto (request,id):
     if request.method == "POST":
         bodega_producto1 = get_object_or_404(Bodega_producto, pk=id)
@@ -102,6 +107,7 @@ def eliminar_bodega_producto (request,id):
         bodega_productoForm = BodegaForm(request.POST or None, instance=bodega_producto1)
     return render(request, "bodega_producto/eliminar_bodega_producto.html",{'bodega_producto_ls': bodega_productoForm})
 
+@login_required(None, "", 'login')
 def modificar_bodega_producto (request,id):
     if request.method == "POST":
         bodega_producto1 = get_object_or_404(Bodega_producto, pk=id)
@@ -119,10 +125,12 @@ def modificar_bodega_producto (request,id):
 
 ##----------------------------- CATEGORIA_PRODUCTO --------------##
 
+@login_required(None, "", 'login')
 def consultar_categoria_producto (request):
     categoria_producto1 = Categoria_producto.objects.all()
     return render(request, "categoria_producto/consultar_categoria_producto.html",{'categoria_producto_ls': categoria_producto1})
 
+@login_required(None, "", 'login')
 def crear_categoria_producto (request):
 
     if request.method == "POST":
@@ -136,6 +144,8 @@ def crear_categoria_producto (request):
          categoria_productoForm = Categoria_productoForm ()
     return render(request, "categoria_producto/crear_categoria_producto.html",{'categoria_productoForm': categoria_productoForm})
 
+
+@login_required(None, "", 'login')
 def eliminar_categoria_producto (request,id):
     if request.method == "POST":
         categoria_producto1 = get_object_or_404(Categoria_producto, pk=id)
@@ -149,6 +159,7 @@ def eliminar_categoria_producto (request,id):
         categoria_productoForm = Categoria_productoForm(request.POST or None, instance=categoria_producto1)
     return render(request, "categoria_producto/eliminar_categoria_producto.html",{'categoria_producto_e': categoria_productoForm})
 
+@login_required(None, "", 'login')
 def modificar_categoria_producto (request,id):
     if request.method == "POST":
         categoria_producto1 = get_object_or_404(Categoria_producto, pk=id)
@@ -166,10 +177,12 @@ def modificar_categoria_producto (request,id):
 
 ##----------------------------- DEVOLUCION --------------##
 
+@login_required(None, "", 'login')
 def consultar_devolucion(request):
     devolucion1 = Devolucion.objects.all()
     return render(request, "devolucion/consultar_devolucion.html",{'devolucion_ls': devolucion1})
 
+@login_required(None, "", 'login')
 def crear_devolucion(request):
     if request.method == "POST":
         devolucionForm = DevolucionForm(request.POST)
@@ -182,6 +195,7 @@ def crear_devolucion(request):
          devolucionForm = DevolucionForm ()
     return render(request, "devolucion/crear_devolucion.html",{'devolucion_ls': devolucionForm})
 
+@login_required(None, "", 'login')
 def eliminar_devolucion(request,id):
     if request.method == "POST":
         devolucion1 = get_object_or_404(Devolucion, pk=id)
@@ -195,6 +209,7 @@ def eliminar_devolucion(request,id):
         devolucionForm = DevolucionForm(request.POST or None, instance=devolucion1)
     return render(request, "devolucion/eliminar_devolucion.html",{'devolucion_ls': devolucionForm})
 
+@login_required(None, "", 'login')
 def modificar_devolucion(request,id):
     if request.method == "POST":
         devolucion1 = get_object_or_404(Devolucion, pk=id)
@@ -212,10 +227,12 @@ def modificar_devolucion(request,id):
 
 ##----------------------------- EGRESO CABECERA --------------##
 
+@login_required(None, "", 'login')
 def consultar_egreso_cabecera (request):
     egreso_cabecera1 = Egreso_cabecera.objects.all()
     return render(request, "egreso_cabecera/consultar_egreso_cabecera.html",{'egreso_cabecera_ls': egreso_cabecera1})
 
+@login_required(None, "", 'login')
 def crear_egreso_cabecera (request):
     if request.method == "POST":
         egreso_cabeceraForm = Egreso_cabeceraForm(request.POST)
@@ -241,6 +258,7 @@ def eliminar_egreso_cabecera (request,id):
         egreso_cabeceraForm = Egreso_cabeceraForm(request.POST or None, instance=egreso_cabecera1)
     return render(request, "egreso_cabecera/eliminar_egreso_cabecera.html",{'egreso_cabecera_ls':egreso_cabeceraForm})
 
+@login_required(None, "", 'login')
 def modificar_egreso_cabecera (request,id):
     if request.method == "POST":
         egreso_cabecera1 = get_object_or_404(Egreso_cabecera, pk=id)
@@ -258,10 +276,12 @@ def modificar_egreso_cabecera (request,id):
 
 ##----------------------------- EGRESO DETALLE --------------##
 
+@login_required(None, "", 'login')
 def consultar_egreso_detalle (request):
     egreso_detalle1 = Egreso_detalle.objects.all()
     return render(request, "egreso_detalle/consultar_egreso_detalle.html",{'egreso_detalle_ls': egreso_detalle1})
 
+@login_required(None, "", 'login')
 def crear_egreso_detalle (request):
     if request.method == "POST":
         egreso_detalleForm = Egreso_detalleForm(request.POST)
@@ -274,6 +294,7 @@ def crear_egreso_detalle (request):
          egreso_detalleForm = Egreso_detalleForm ()
     return render(request, "egreso_detalle/crear_egreso_detalle.html",{'egreso_detalle_form': egreso_detalleForm})
 
+@login_required(None, "", 'login')
 def eliminar_egreso_detalle (request,id):
     if request.method == "POST":
         egreso_detalle1 = get_object_or_404(Egreso_detalle, pk=id)
@@ -287,6 +308,7 @@ def eliminar_egreso_detalle (request,id):
         egreso_detalleForm = Egreso_detalleForm(request.POST or None, instance=egreso_detalle1)
     return render(request, "egreso_detalle/eliminar_egreso_detalle.html",{'egreso_detalle_ls': egreso_detalleForm})
 
+@login_required(None, "", 'login')
 def modificar_egreso_detalle (request,id):
     if request.method == "POST":
         egreso_detalle1 = get_object_or_404(Egreso_detalle, pk=id)
@@ -304,10 +326,12 @@ def modificar_egreso_detalle (request,id):
 
 ##----------------------------- INGRESO CABECERA--------------##
 
+@login_required(None, "", 'login')
 def consultar_ingreso_cabecera (request):
     ingreso_cabecera1 = ingreso_cabecera.objects.all()
     return render(request, "ingreso_cabecera/consultar_ingreso_cabecera.html",{'ingreso_cabecera': ingreso_cabecera1})
 
+@login_required(None, "", 'login')
 def crear_ingreso_cabecera (request):
     if request.method == "POST":
         ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST)
@@ -320,6 +344,7 @@ def crear_ingreso_cabecera (request):
          ingreso_cabeceraForm = Ingreso_cabeceraForm ()
     return render(request, "ingreso_cabecera/crear_ingreso_cabecera.html",{'ingreso_cabecera': ingreso_cabeceraForm})
 
+@login_required(None, "", 'login')
 def eliminar_ingreso_cabecera (request,id):
     if request.method == "POST":
         ingreso_cabecera1 = get_object_or_404(ingreso_cabecera, pk=id)
@@ -333,6 +358,7 @@ def eliminar_ingreso_cabecera (request,id):
         ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST or None, instance=ingreso_cabecera1)
     return render(request, "ingreso_cabecera/eliminar_ingreso_cabecera.html",{'ingreso_cabecera': ingreso_cabeceraForm})
 
+@login_required(None, "", 'login')
 def modificar_ingreso_cabecera (request,id):
     if request.method == "POST":
         ingreso_cabecera1 = get_object_or_404(ingreso_cabecera, pk=id)
@@ -350,10 +376,12 @@ def modificar_ingreso_cabecera (request,id):
 
 ##----------------------------- INGRESO DETALLE--------------##
 
+@login_required(None, "", 'login')
 def  consultar_ingreso_detalle (request):
     ingreso_detalle1 = ingreso_detalle.objects.all()
     return render(request, "ingreso_detalle/consultar_ingreso_detalle.html",{'ingreso_detalle_ls':ingreso_detalle1})
 
+@login_required(None, "", 'login')
 def crear_ingreso_detalle (request):
     if request.method == "POST":
         ingreso_detalleForm = Ingreso_detalleForm(request.POST)
@@ -366,6 +394,7 @@ def crear_ingreso_detalle (request):
          ingreso_detalleForm = Ingreso_detalleForm ()
     return render(request, "ingreso_detalle/crear_ingreso_detalle.html",{'ingreso_detalle_ls':ingreso_detalleForm})
 
+@login_required(None, "", 'login')
 def eliminar_ingreso_detalle (request,id):
     if request.method == "POST":
         ingreso_detalle1 = get_object_or_404(ingreso_detalle, pk=id)
@@ -379,6 +408,7 @@ def eliminar_ingreso_detalle (request,id):
         ingreso_detalleForm = Ingreso_detalleForm(request.POST or None, instance=ingreso_detalle1)
     return render(request, "ingreso_detalle/eliminar_ingreso_detalle.html",{'ingreso_detalle_ls':ingreso_detalleForm})
 
+@login_required(None, "", 'login')
 def modificar_ingreso_detalle (request,id):
     if request.method == "POST":
         ingreso_detalle1 = get_object_or_404(ingreso_detalle, pk=id)
@@ -396,7 +426,7 @@ def modificar_ingreso_detalle (request,id):
 
 ##----------------------------- PERSONA --------------##
 
-
+@login_required(None, "", 'login')
 def consultar_persona( request ) :
     buscarpersonaform = BuscarPersonaForm()
     persona = None
@@ -414,6 +444,7 @@ def consultar_persona( request ) :
     return render ( request , "persona/consultar_persona.html" , {'persona_ls' : persona, 'buscarpersona' : buscarpersonaform } )
 
 
+@login_required(None, "", 'login')
 def crear_persona( request ) :
     if request.method == "POST" :
         personaForm = PersonaForm ( request.POST )
@@ -427,7 +458,7 @@ def crear_persona( request ) :
 
     return render ( request , "persona/crear_persona.html" , {'persona' : personaForm} )
 
-
+@login_required(None, "", 'login')
 def eliminar_persona(request, id ):
     if request.method == "POST" :
         personan = get_object_or_404(Persona, pk = id)
@@ -443,6 +474,7 @@ def eliminar_persona(request, id ):
     return render(request,"persona/eliminar_persona.html",{'personaForm' : personaForm})
 
 
+@login_required(None, "", 'login')
 def modificar_persona( request ,id ):
     if request.method == "POST":
         personan = get_object_or_404(Persona, pk=id)
@@ -460,10 +492,12 @@ def modificar_persona( request ,id ):
 
 ##----------------------------- PRODUCTO --------------##
 
+@login_required(None, "", 'login')
 def consultar_producto(request):
     producto1 = producto.objects.all()
     return render(request, "producto/consultar_producto.html",{'producto_ls': producto1})
 
+@login_required(None, "", 'login')
 def crear_producto(request):
     if request.method == "POST":
         productoForm = ProductoForm(request.POST)
@@ -476,6 +510,7 @@ def crear_producto(request):
          productoForm = ProductoForm ()
     return render(request, "producto/crear_producto.html",{'productoform': productoForm})
 
+@login_required(None, "", 'login')
 def eliminar_producto(request,id):
     if request.method == "POST":
         producto1 = get_object_or_404(producto, pk=id)
@@ -489,6 +524,7 @@ def eliminar_producto(request,id):
         productoForm = ProductoForm(request.POST or None, instance=producto1)
     return render(request, "producto/eliminar_producto.html",{'producto_e': productoForm})
 
+@login_required(None, "", 'login')
 def modificar_producto(request,id):
     if request.method == "POST":
         producto1 = get_object_or_404(producto, pk=id)
@@ -506,10 +542,12 @@ def modificar_producto(request,id):
 
 ##----------------------------- PROVEEDOR --------------##
 
+@login_required(None, "", 'login')
 def consultar_proveedor(request):
     proveedor1 = proveedor.objects.all()
     return render(request, "proveedor/consultar_proveedor.html",{'proveedor_ls': proveedor1})
 
+@login_required(None, "", 'login')
 def crear_proveedor(request):
     if request.method == "POST":
         proveedorForm = ProveedorForm(request.POST)
@@ -522,6 +560,7 @@ def crear_proveedor(request):
          proveedorForm = ProveedorForm ()
     return render(request, "proveedor/crear_proveedor.html",{'proveedor_ls': proveedorForm})
 
+@login_required(None, "", 'login')
 def eliminar_proveedor(request,id):
     if request.method == "POST":
         proveedor1 = get_object_or_404(proveedor, pk=id)
@@ -535,6 +574,7 @@ def eliminar_proveedor(request,id):
         proveedorForm = ProveedorForm(request.POST or None, instance=proveedor1)
     return render(request, "proveedor/eliminar_proveedor.html",{'proveedor_ls': proveedorForm})
 
+@login_required(None, "", 'login')
 def modificar_proveedor(request,id):
     if request.method == "POST":
         proveedor1 = get_object_or_404(proveedor, pk=id)
@@ -553,6 +593,7 @@ def modificar_proveedor(request,id):
 ##----------------------------- ROL PERSONA--------------##
 
 
+@login_required(None, "", 'login')
 def consultar_rol_persona (request):
     buscar_rolpersonaform = BuscarPersonaForm ()
     rol_persona1 = None
@@ -568,6 +609,7 @@ def consultar_rol_persona (request):
         rol_persona1 = rol_persona.objects.all ()
     return render(request, "rol_persona/consultar_rol_persona.html",{'rol_persona_ls': rol_persona1, 'buscar_rolpersona': buscar_rolpersonaform})
 
+@login_required(None, "", 'login')
 def crear_rol_persona (request):
     if request.method == "POST":
         rol_personaForm = Rol_personaForm(request.POST)
@@ -580,6 +622,7 @@ def crear_rol_persona (request):
          rol_personaForm = Rol_personaForm ()
     return render(request, "rol_persona/crear_rol_persona.html",{'rolpersona': rol_personaForm})
 
+@login_required(None, "", 'login')
 def eliminar_rol_persona (request,id):
     if request.method == "POST":
         rol_persona1 = get_object_or_404(rol_persona, pk=id)
@@ -593,6 +636,7 @@ def eliminar_rol_persona (request,id):
         rol_personaForm = Rol_personaForm(request.POST or None, instance=rol_persona1)
     return render(request, "rol_persona/eliminar_rol_persona.html",{'rol_persona_e': rol_personaForm})
 
+@login_required(None, "", 'login')
 def modificar_rol_persona (request,id):
     if request.method == "POST":
         rol_persona1 = get_object_or_404(rol_persona, pk=id)
@@ -611,29 +655,31 @@ def modificar_rol_persona (request,id):
 ##----------------------------- ROL stock -------------##
 
 
+@login_required(None, "", 'login')
 def consultar_stock( request ) :
     return render ( request , "stock/consultar_stock.html" )
 
-
+@login_required(None, "", 'login')
 def crear_stock( request ) :
     return render ( request , "stock/crear_stock.html" )
 
-
+@login_required(None, "", 'login')
 def eliminar_stock( request ) :
     return render ( request , "stock/eliminar_stock.html" )
 
-
+@login_required(None, "", 'login')
 def modificar_stock( request ) :
     return render ( request , "stock/modificar_stock.html" )
 
 
 ##----------------------------- unidad de medida -------------##
 
-
+@login_required(None, "", 'login')
 def consultar_categoria_bodega (request):
     categoriabodega = CategoriaBodega.objects.all()
     return render(request, "categoria_bodega/consultar_categoria_bodega.html",{'categoria_bodega_ls': categoriabodega})
 
+@login_required(None, "", 'login')
 def crear_categoria_bodega(request):
     if request.method == "POST" :
         categoriabodegaform = Categoria_bodegaForm ( request.POST )
@@ -646,6 +692,7 @@ def crear_categoria_bodega(request):
         categoriabodegaform = Categoria_bodegaForm ()
     return render(request, "categoria_bodega/crear_categoria_bodega.html",{'categoriabodegaForm': categoriabodegaform})
 
+@login_required(None, "", 'login')
 def eliminar_categoria_bodega(request,id):
 
     if request.method == "POST":
@@ -661,6 +708,7 @@ def eliminar_categoria_bodega(request,id):
 
     return render(request, "categoria_bodega/eliminar_categoria_bodega.html",{'categoria_bodega_elim': categoriabodegaform})
 
+@login_required(None, "", 'login')
 def modificar_categoria_bodega(request,id):
     if request.method == "POST":
         categoriabodega = get_object_or_404(CategoriaBodega, pk=id)
@@ -679,10 +727,12 @@ def modificar_categoria_bodega(request,id):
 ##----------------------------- unidad de marca -------------##
 
 
+@login_required(None, "", 'login')
 def  consultar_marca(request):
     marca1 = Marca.objects.all()
     return render(request, "marca/consultar_marca.html",{'marca_ls': marca1})
 
+@login_required(None, "", 'login')
 def crear_marca (request):
     if request.method == "POST":
         marcaForm = MarcaForm(request.POST)
@@ -695,6 +745,7 @@ def crear_marca (request):
          marcaForm = MarcaForm ()
     return render(request, "marca/crear_marca.html",{'marca_ls': marcaForm})
 
+@login_required(None, "", 'login')
 def eliminar_marca (request,id):
     if request.method == "POST":
         marca1 = get_object_or_404(Marca, pk=id)
@@ -708,6 +759,7 @@ def eliminar_marca (request,id):
         marcaForm = MarcaForm(request.POST or None, instance=marca1)
     return render(request, "marca/eliminar_marca.html",{'marca_ls': marcaForm})
 
+@login_required(None, "", 'login')
 def modificar_marca (request,id):
     if request.method == "POST":
         marca1 = get_object_or_404(Marca, pk=id)

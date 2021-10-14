@@ -7,5 +7,10 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include("control_inventario.urls")),
+    path('accounts/', include('django.contrib.auth.urls')),
+
+
+
+    path('control_inventario/', include("control_inventario.urls")),
+    path('', include("autenticacion.urls")),
 ]

@@ -176,7 +176,7 @@ class producto (models.Model):
     codigo = models.CharField ( max_length=20 )
     nombre = models.CharField ( max_length=150 )
     descripcion = models.CharField ( max_length=250 )
-    categoria_producto = models.ManyToManyField ( Categoria_producto )
+    categoria_producto = models.ForeignKey ( Categoria_producto, on_delete=models.CASCADE)
 
     fecha_creacion = models.DateTimeField ( auto_now_add=True )
     fecha_modificacion = models.DateTimeField ( auto_now=True )

@@ -1,6 +1,26 @@
 from django.db import models
 
 # Create your models here.
+class ciudad(models.Model):
+    nombre = models.CharField(max_length=125)
+
+
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_modificacion = models.DateTimeField(auto_now=True)
+    usuario_creacion = models.CharField(max_length=15)
+    usuario_modificacion = models.CharField(max_length=15)
+    estado = models.IntegerField(default=1)
+
+    class Meta:
+        db_table = "inv_ciudad"
+        verbose_name = "Ciudad"
+        verbose_name_plural = "Ciudades"
+        ordering = ['fecha_creacion']
+
+    def __str__(self):
+        return '{}'.format(self.nombre)
+
+
 class CategoriaBodega(models.Model):
     nombre = models.CharField(max_length=125)
     descripcion_catbog = models.CharField(max_length=250)
@@ -195,6 +215,7 @@ class producto (models.Model):
 
 class Devolucion ( models.Model ) :
     detalle = models.CharField ( max_length= 256 )
+    Producto = models.ForeignKey(producto, on_delete=models.CASCADE)
 
 
     usuario_creacion = models.CharField ( max_length=15 )
@@ -213,12 +234,12 @@ class Devolucion ( models.Model ) :
         return '{}'.format ( self.detalle )
 
 class proveedor (models.Model):
-    nombre = models.CharField(max_length=50)
-    apellido = models.CharField(max_length=100)
-    edad = models.CharField(max_length=3)
+    ruc = models.CharField(max_length=13)
+    nombre_empresa = models.CharField(max_length=100)
+    descripcion_proveedor = models.CharField(max_length=100)
     direccion = models.CharField(max_length=250)
     celular = models.CharField(max_length=10)
-    correo = models.EmailField(null= True, blank= True)
+    Ciudad = models.ForeignKey(ciudad , on_delete=models.CASCADE)
 
     usuario_creacion = models.CharField(max_length=15)
     usuario_modificacion =models.CharField(max_length=15)
@@ -233,7 +254,7 @@ class proveedor (models.Model):
         ordering = ['fecha_creacion']
 
     def __str__( self ) :
-        return '{}'.format ( self.nombre )
+        return '{}'.format ( self.nombre_empresa )
 
 
 

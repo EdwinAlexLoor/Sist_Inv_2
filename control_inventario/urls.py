@@ -99,10 +99,10 @@ urlpatterns = [
 
     ##----------- Ruta Para Stock -----------##
 
-    path ( 'consultar_stock/' , views.consultar_stock , name="consultar_stock" ) ,
-    path ( 'crear_stock/' , views.crear_stock , name="crear_stock" ) ,
-    path ( 'eliminar_stock/' , views.eliminar_stock , name="eliminar_stock" ) ,
-    path ( 'modificar_stock/' , views.modificar_stock , name="modificar_stock" ) ,
+    path ( 'consultar_ciudad/' , views.consultar_ciudad , name="consultar_ciudad" ) ,
+    path ( 'crear_ciudad/' , views.crear_ciudad , name="crear_ciudad" ) ,
+    path ( 'eliminar_ciudad/' , views.eliminar_ciudad , name="eliminar_ciudad" ) ,
+    path ( 'modificar_ciudad/' , views.modificar_ciudad , name="modificar_ciudad" ) ,
 
     ##----------- Ruta Para _categoria_bodega -----------##
 

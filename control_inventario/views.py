@@ -3,10 +3,10 @@ from django.db.models import Q
 from django.shortcuts import render , HttpResponse , redirect , get_object_or_404
 from .forms import  PersonaForm , BodegaForm, Rol_personaForm, Categoria_productoForm, Bodega_productoForm, \
     DevolucionForm, Egreso_cabeceraForm, MarcaForm, Egreso_detalleForm, Ingreso_cabeceraForm, Ingreso_detalleForm, \
-    ProductoForm, ProveedorForm, Categoria_bodegaForm, BuscarPersonaForm, BuscarRolPersonaForm
+    ProductoForm, ProveedorForm, Categoria_bodegaForm, BuscarPersonaForm, BuscarRolPersonaForm, CiudadForm
 from .models import Persona, rol_persona, bodega, Categoria_producto, Bodega_producto, \
     Devolucion, Egreso_cabecera, Marca, Egreso_detalle, ingreso_cabecera, ingreso_detalle, producto , \
-    proveedor, CategoriaBodega
+    proveedor, CategoriaBodega, ciudad
 
 
 # Create your views here.
@@ -652,24 +652,59 @@ def modificar_rol_persona (request,id):
     return render(request, "rol_persona/modificar_rol_persona.html",{'rol_persona_m': rol_personaForm})
 
 
-##----------------------------- ROL stock -------------##
+##----------------------------- ROL ciudad -------------##
 
 
 @login_required(None, "", 'login')
-def consultar_stock( request ) :
-    return render ( request , "stock/consultar_stock.html" )
+def consultar_ciudad( request ) :
+    Ciudad = ciudad.objects.all()
+    return render ( request , "ciudad/consultar_ciudad.html",{'ciudad_consul': Ciudad} )
 
 @login_required(None, "", 'login')
-def crear_stock( request ) :
-    return render ( request , "stock/crear_stock.html" )
+def crear_ciudad( request ) :
+    if request.method == "POST" :
+        ciudadform = CiudadForm ( request.POST )
+        if ciudadform.is_valid () :
+            ciudadform.save ()
+            return redirect ( 'consultar_ciudad' )
+        else :
+            ciudadform = CiudadForm ()
+    else :
+        ciudadform = CiudadForm ()
+
+    return render ( request , "ciudad/crear_ciudad.html" ,{'ciudad_crear': ciudadform} )
 
 @login_required(None, "", 'login')
-def eliminar_stock( request ) :
-    return render ( request , "stock/eliminar_stock.html" )
+def eliminar_ciudad( request, id ) :
+
+    if request.method == "POST":
+        Ciudad = get_object_or_404(ciudad, pk=id)
+        ciudadform = CiudadForm(request.POST or None, instance=Ciudad)
+        if ciudadform.is_valid():
+            Ciudad.estado = 0
+            Ciudad.save()
+            return redirect('consultar_categoria_bodega')
+    else:
+        Ciudad = get_object_or_404(ciudad, pk=id)
+        ciudadform = ProductoForm(request.POST or None, instance=Ciudad)
+
+
+    return render ( request , "ciudad/eliminar_ciudad.html",{'ciudad_e': ciudadform} )
 
 @login_required(None, "", 'login')
-def modificar_stock( request ) :
-    return render ( request , "stock/modificar_stock.html" )
+def modificar_ciudad( request, id ) :
+    if request.method == "POST" :
+        Ciudad = get_object_or_404 ( ciudad , pk=id )
+        ciudadform = CiudadForm ( request.POST or None , instance=Ciudad )
+        if ciudadform.is_valid () :
+            ciudadform.save ()
+            return redirect ( 'consultar_ciudad' )
+        else :
+            ciudadform = CiudadForm ( instance=Ciudad )
+    else :  ##GET
+        Ciudad = get_object_or_404 ( ciudad , pk=id )
+        ciudadform = CiudadForm ( request.POST or None , instance=Ciudad )
+    return render ( request , "ciudad/modificar_ciudad.html" ,{'ciudad_m': ciudadform} )
 
 
 ##----------------------------- unidad de medida -------------##

@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django import forms
 from .models import CategoriaBodega, bodega, Categoria_producto,Marca, rol_persona, ingreso_cabecera, Egreso_cabecera,\
-    Persona, producto, Devolucion, proveedor,Bodega_producto, ingreso_detalle, Egreso_detalle
+    Persona, producto, Devolucion, proveedor,Bodega_producto, ingreso_detalle, Egreso_detalle, ciudad
 
 class BuscarRolPersonaForm(forms.Form):
     desde = forms.DateTimeField(label="Desde", required=True, widget=forms.DateInput(format=('%Y-%m-%d'),
@@ -80,16 +80,21 @@ class ProductoForm (ModelForm):
         model = producto
         fields = [ 'codigo', 'nombre', 'descripcion', 'categoria_producto' ]
 
+class CiudadForm (ModelForm):
+    class Meta:
+        model = ciudad
+        fields = ['nombre' ]
+
 class DevolucionForm (ModelForm):
     class Meta:
         model = Devolucion
-        fields = ['detalle'  ]
+        fields = ['detalle' ,'Producto' ]
 
 
 class ProveedorForm (ModelForm):
     class Meta:
         model = proveedor
-        fields = ['nombre', 'apellido', 'edad', 'direccion', 'celular', 'correo' ]
+        fields = ['ruc', 'nombre_empresa', 'descripcion_proveedor', 'direccion', 'celular', 'Ciudad' ]
 
 
 class Bodega_productoForm (ModelForm):

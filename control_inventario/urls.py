@@ -118,4 +118,6 @@ urlpatterns = [
     path ( 'eliminar_marca/<int:id>' , views.eliminar_marca, name="eliminar_marca" ) ,
     path ( 'modificar_marca/<int:id>' , views.modificar_marca , name="modificar_marca" ) ,
 
+    path('exportarListaPersonaPdf/', views.exportarListaPersonaPdf, name="exportarListaPersonaPdf"),
+
 ]

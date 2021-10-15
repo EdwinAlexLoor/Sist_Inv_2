@@ -26,7 +26,7 @@
             {#            right#}
             <form action="{% url 'consultar_egreso_detalle' %}" method="post">
                 {% csrf_token %}
-                {{ buscarpersona.as_table }}
+                {{ buscafecha.as_table }}
                 <button type="submit">
                     <svg class="bi me-2" width="40" height="20">
                         <use xlink:href="#bi bi-search"/>
@@ -60,7 +60,7 @@
                         <td> {{ egresod.Producto }} </td>
                         <td> {{ egresod.cantidad_egreso }} </td>
                         <td> {{ egresod.precio_egreso }} </td>
-                        <td> {{ egresod.sub_total }} </td>
+                        <td> {{ egresod.sub_total_egreso }} </td>
                         <td> {{ egresod.fecha_creacion }} </td>
                         <td> {{ egresod.fecha_modificacion }} </td>
                         <td><a href='{% url 'modificar_egreso_detalle' egresod.id %}'>

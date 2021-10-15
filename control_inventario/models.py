@@ -122,11 +122,11 @@ class rol_persona (models.Model):
 
 
 class ingreso_cabecera (models.Model):
-    codigo_documento = models.CharField ( max_length=15 )
-    fecha_documento = models.DateTimeField ()
-    usuario_recibe = models.CharField ( max_length=15 )
-    usuario_entrega = models.CharField ( max_length=15 )
-    total_ingreso = models.DecimalField ( max_digits=16 , decimal_places=4 )
+    codigo_documento_cabecera = models.CharField ( max_length=15 )
+    fecha_documento_cabecera = models.DateTimeField()
+    usuario_recibe_cabecera = models.CharField ( max_length=15 )
+    usuario_entrega_cabecera = models.CharField ( max_length=15 )
+    total_ingreso_cabecera = models.DecimalField ( max_digits=16 , decimal_places=4 )
 
     fecha_creacion = models.DateTimeField ( auto_now_add=True )
     fecha_modificacion = models.DateTimeField ( auto_now=True )
@@ -141,15 +141,15 @@ class ingreso_cabecera (models.Model):
         ordering = ['fecha_creacion']
 
     def __str__( self ) :
-        return '{}'.format ( self.codigo_documento )
+        return '{}'.format ( self.codigo_documento_cabecera )
 
 
 class Egreso_cabecera ( models.Model ) :
-    codigo_documento = models.CharField ( max_length=15 )
-    fecha_documento = models.DateTimeField ()
-    usuario_entrega = models.CharField ( max_length=15 )
-    usuario_recibe = models.CharField ( max_length=15 )
-    total_egreso = models.DecimalField ( max_digits=16 , decimal_places=4 )
+    codigo_documento_eg = models.CharField ( max_length=15 )
+    fecha_documento_eg = models.DateTimeField ()
+    usuario_entrega_eg = models.CharField ( max_length=15 )
+    usuario_recibe_eg = models.CharField ( max_length=15 )
+    total_egreso_eg = models.DecimalField ( max_digits=16 , decimal_places=4 )
 
     fecha_creacion = models.DateTimeField ( auto_now_add=True )
     fecha_modificacion = models.DateTimeField ( auto_now=True )
@@ -164,7 +164,7 @@ class Egreso_cabecera ( models.Model ) :
         ordering = ['fecha_creacion']
 
     def __str__( self ) :
-        return '{}'.format ( self.codigo_documento )
+        return '{}'.format ( self.codigo_documento_eg )
 
 class Persona (models.Model):
     nombre = models.CharField(max_length=50)
@@ -289,7 +289,7 @@ class ingreso_detalle (models.Model):
     Producto = models.ForeignKey ( producto , on_delete=models.CASCADE )
     cantidad_ingreso = models.IntegerField ()
     precio_ingreso = models.DecimalField ( max_digits=16 , decimal_places=4 )
-    sub_total = models.DecimalField ( max_digits=16 , decimal_places=4 )
+    sub_total_ingreso = models.DecimalField ( max_digits=16 , decimal_places=4 )
 
     fecha_creacion = models.DateTimeField ( auto_now_add=True )
     fecha_modificacion = models.DateTimeField ( auto_now=True )
@@ -312,7 +312,7 @@ class Egreso_detalle ( models.Model ) :
     Producto = models.ForeignKey ( producto , on_delete=models.CASCADE )
     cantidad_egreso = models.IntegerField ()
     precio_egreso = models.DecimalField ( max_digits=16 , decimal_places=4 )
-    sub_total = models.DecimalField ( max_digits=16 , decimal_places=4 )
+    sub_total_egreso = models.DecimalField ( max_digits=16 , decimal_places=4 )
 
     fecha_creacion = models.DateTimeField ( auto_now_add=True )
     fecha_modificacion = models.DateTimeField ( auto_now=True )

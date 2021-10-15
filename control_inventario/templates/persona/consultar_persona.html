@@ -12,6 +12,7 @@
     </div>
 
 
+
     <div class="d-flex justify-content-between py-lg-4 fst-italic">
         <div>
             {#            left#}
@@ -23,7 +24,9 @@
         </div>
 
         <div>
-            {#            right#}
+            <div class="d-flex justify-content-between py-lg-4 fst-italic">
+        <div>
+            {#            left#}
             <form action="{% url 'consultar_persona' %}" method="post">
                 {% csrf_token %}
                 {{ buscarpersona.as_table }}
@@ -33,7 +36,30 @@
                     </svg>
                 </button>
 
+
             </form>
+
+
+        </div>
+
+        <div>
+            {#            right#}
+            <form action="{% url 'exportarListaPersonaPdf' %}" method="post">
+                {% csrf_token %}
+                {{ searchPersonaForm.as_table }}
+                <button type="submit">
+                    <svg class="bi me-2" width="40" height="20">
+                        <use xlink:href="#bi bi-file-earmark-pdf"/>
+                    </svg>
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+            {#            right#}
+
+
         </div>
     </div>
 

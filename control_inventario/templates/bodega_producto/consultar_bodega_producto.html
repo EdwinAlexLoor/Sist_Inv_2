@@ -26,7 +26,7 @@
             {#            right#}
             <form action="{% url 'consultar_bodega_producto' %}" method="post">
                 {% csrf_token %}
-                {{ buscarpersona.as_table }}
+                {{ productobusca.as_table }}
                 <button type="submit">
                     <svg class="bi me-2" width="40" height="20">
                         <use xlink:href="#bi bi-search"/>
@@ -57,24 +57,24 @@
             </tr>
             </thead>
             <tbody>
-            {% for bodega in bodega_producto_ls %}
-                {% if bodega.estado == 1 %}
+            {% for bod in bodega_producto_ls %}
+                {% if bod.estado == 1 %}
                     <tr>
-                        <td> {{ bodega.nombre }} </td>
-                        <td> {{ bodega.apellido }} </td>
-                        <td> {{ bodega.edad }} </td>
-                        <td> {{ bodega.direccion }} </td>
-                        <td> {{ bodega.cedula }} </td>
-                        <td> {{ bodega.correo }} </td>
-                        <td> {{ bodega.Rol_persona }} </td>
-                        <td> {{ bodega.fecha_creacion | date }} </td>ga
-                        <td> {{ bodega.fecha_modificacion | date }} </td>
-                        <td><a href='{% url 'modificar_bodega_producto' bodega.id %}'>
+                        <td> {{ bod.Bodega }} </td>
+                        <td> {{ bod.Producto }} </td>
+                        <td> {{ bod.cantidad_existencia }} </td>
+                        <td> {{ bod.precio_compra }} </td>
+                        <td> {{ bod.precio_venta }} </td>
+                        <td> {{ bod.stock_maximo }} </td>
+                        <td> {{ bod.stock_minimo }} </td>
+                        <td> {{ bod.fecha_creacion | date }} </td>
+                        <td> {{ bod.fecha_modificacion | date }} </td>
+                        <td><a href='{% url 'modificar_bodega_producto' bod.id %}'>
                             <svg class="bi me-2" width="32" height="20">
                                 <use xlink:href="#bi bi-pencil-square"/>
                             </svg>
                         </a></td>
-                        <td><a href='{% url 'eliminar_bodega_producto' bodega.id %}'>
+                        <td><a href='{% url 'eliminar_bodega_producto' bod.id %}'>
                             <svg class="bi me-2" width="32" height="20">
                                 <use xlink:href="#bi bi-trash"/>
                             </svg>

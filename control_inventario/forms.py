@@ -3,7 +3,13 @@ from django import forms
 from .models import CategoriaBodega, bodega, Categoria_producto,Marca, rol_persona, ingreso_cabecera, Egreso_cabecera,\
     Persona, producto, Devolucion, proveedor,Bodega_producto, ingreso_detalle, Egreso_detalle, ciudad
 
+class BuscarCod(forms.Form):
+    codigo = forms.CharField(label="Codigo De Documento", required=True)
 
+
+class BuscarbodegaForm(forms.Form):
+
+    nombre=forms.CharField (label="Nombre", required="True")
 class BuscarNombreProductoForm ( forms.Form ) :
     nombre = forms.CharField ( label="Nombre Producto" , required=True )
 
@@ -79,16 +85,16 @@ class Rol_personaForm(ModelForm):
 
 
 
-class Ingreso_cabeceraForm (ModelForm):
+class Ingreso_cabeceraForm(ModelForm):
     class Meta:
         model = ingreso_cabecera
-        fields = ['codigo_documento', 'fecha_documento', 'usuario_recibe', 'usuario_entrega', 'total_ingreso' ]
+        fields = ['codigo_documento_cabecera', 'fecha_documento_cabecera', 'usuario_recibe_cabecera', 'usuario_entrega_cabecera', 'total_ingreso_cabecera' ]
 
 
 class Egreso_cabeceraForm (ModelForm):
     class Meta:
         model = Egreso_cabecera
-        fields = ['codigo_documento', 'fecha_documento', 'usuario_entrega', 'usuario_recibe', 'total_egreso' ]
+        fields = ['codigo_documento_eg', 'fecha_documento_eg', 'usuario_entrega_eg', 'usuario_recibe_eg', 'total_egreso_eg' ]
 
 
 class PersonaForm(ModelForm):
@@ -128,9 +134,9 @@ class Bodega_productoForm (ModelForm):
 class Ingreso_detalleForm (ModelForm):
     class Meta:
         model = ingreso_detalle
-        fields = ['Ingreso_cabecera', 'Producto', 'cantidad_ingreso', 'precio_ingreso', 'sub_total' ]
+        fields = ['Ingreso_cabecera', 'Producto', 'cantidad_ingreso', 'precio_ingreso', 'sub_total_ingreso' ]
 
 class Egreso_detalleForm (ModelForm):
     class Meta:
         model = Egreso_detalle
-        fields = ['egreso_cabecera', 'Producto', 'cantidad_egreso', 'precio_egreso', 'sub_total']
+        fields = ['egreso_cabecera', 'Producto', 'cantidad_egreso', 'precio_egreso', 'sub_total_egreso']

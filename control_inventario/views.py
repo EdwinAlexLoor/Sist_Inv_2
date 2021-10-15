@@ -4,7 +4,7 @@ from django.shortcuts import render , HttpResponse , redirect , get_object_or_40
 from .forms import  PersonaForm , BodegaForm, Rol_personaForm, Categoria_productoForm, Bodega_productoForm, \
     DevolucionForm, Egreso_cabeceraForm, MarcaForm, Egreso_detalleForm, Ingreso_cabeceraForm, Ingreso_detalleForm, \
     ProductoForm, ProveedorForm, Categoria_bodegaForm, BuscarPersonaForm, BuscarFecha, \
-    CiudadForm, BuscarNombreFecha,BuscarRucProveedorForm,BuscarNombreProductoForm
+    CiudadForm, BuscarNombreFecha,BuscarRucProveedorForm,BuscarNombreProductoForm,BuscarbodegaForm, BuscarCod
 
 from .models import Persona, rol_persona, bodega, Categoria_producto, Bodega_producto, \
     Devolucion, Egreso_cabecera, Marca, Egreso_detalle, ingreso_cabecera, ingreso_detalle, producto , \
@@ -91,8 +91,18 @@ def base2 (request):
 ##----------------------------- BODEGGA --------------##
 @login_required(None, "", 'login')
 def consultar_bodega( request ) :
-    Bodega = bodega.objects.all()
-    return render ( request , "bodega/consultar_bodega.html" , {'bodega_ls' : Bodega} )
+    buscarbodeganombreform = BuscarbodegaForm ()
+    bodega1 = None
+
+    if request.method == "POST" :
+        buscarbodeganombreform = BuscarbodegaForm ( request.POST or None )
+        if buscarbodeganombreform.is_valid () :
+            nombre = buscarbodeganombreform.cleaned_data['nombre']
+            bodega1 = bodega.objects.filter ( nombre__icontains=nombre )
+    else :
+        bodega1 = bodega.objects.all ()
+    #Bodega = bodega.objects.all()
+    return render ( request , "bodega/consultar_bodega.html" , {'bodega_ls' : bodega1, 'bodegabuscar' : buscarbodeganombreform} )
 
 @login_required(None, "", 'login')
 def crear_bodega( request ) :
@@ -140,8 +150,20 @@ def modificar_bodega (request,id):
 ##----------------------------- BODEGA_PRODUCTO --------------##
 @login_required(None, "", 'login')
 def consultar_bodega_producto (request):
-    bodega_producto1 =Bodega_producto.objects.all()
-    return render(request, "bodega_producto/consultar_bodega_producto.html",{'bodega_producto_ls': bodega_producto1})
+    buscarnombreproductoform = BuscarFecha ()
+    bodega_producto1 = None
+
+    if request.method == "POST" :
+        buscarnombreproductoform = BuscarFecha ( request.POST or None )
+        if buscarnombreproductoform.is_valid () :
+            desde = buscarnombreproductoform.cleaned_data['desde']
+            hasta = buscarnombreproductoform.cleaned_data['hasta']
+
+            bodega_producto1 = Bodega_producto.objects.filter ( fecha_creacion__range=(desde , hasta) )
+    else :
+        bodega_producto1 = Bodega_producto.objects.all ()
+    #bodega_producto1 =Bodega_producto.objects.all()
+    return render(request, "bodega_producto/consultar_bodega_producto.html",{'bodega_producto_ls': bodega_producto1, 'productobusca': buscarnombreproductoform})
 
 @login_required(None, "", 'login')
 def crear_bodega_producto (request):
@@ -317,8 +339,17 @@ def modificar_devolucion(request,id):
 
 @login_required(None, "", 'login')
 def consultar_egreso_cabecera (request):
-    egreso_cabecera1 = Egreso_cabecera.objects.all()
-    return render(request, "egreso_cabecera/consultar_egreso_cabecera.html",{'egreso_cabecera_ls': egreso_cabecera1})
+    buscarbodeganombreform = BuscarCod()
+    egreso_cabecera1 = None
+
+    if request.method == "POST" :
+        buscarbodeganombreform = BuscarCod( request.POST or None )
+        if buscarbodeganombreform.is_valid () :
+            codigo = buscarbodeganombreform.cleaned_data['codigo']
+            egreso_cabecera1 = Egreso_cabecera.objects.filter (codigo_documento_eg__iendswith=codigo )
+    else :
+        egreso_cabecera1 = Egreso_cabecera.objects.all()
+    return render(request, "egreso_cabecera/consultar_egreso_cabecera.html",{'egreso_cabecera_ls': egreso_cabecera1, 'buscarcod': buscarbodeganombreform})
 
 @login_required(None, "", 'login')
 def crear_egreso_cabecera (request):
@@ -366,8 +397,20 @@ def modificar_egreso_cabecera (request,id):
 
 @login_required(None, "", 'login')
 def consultar_egreso_detalle (request):
-    egreso_detalle1 = Egreso_detalle.objects.all()
-    return render(request, "egreso_detalle/consultar_egreso_detalle.html",{'egreso_detalle_ls': egreso_detalle1})
+    buscarfechaform = BuscarFecha ()
+    egreso_detalle1 = None
+
+    if request.method == "POST" :
+        buscarfechaform = BuscarFecha ( request.POST or None )
+        if buscarfechaform.is_valid () :
+            desde = buscarfechaform.cleaned_data['desde']
+            hasta = buscarfechaform.cleaned_data['hasta']
+
+            egreso_detalle1 = Egreso_detalle.objects.filter ( fecha_creacion__range=(desde , hasta) )
+    else :
+        egreso_detalle1 = Egreso_detalle.objects.all()
+
+    return render(request, "egreso_detalle/consultar_egreso_detalle.html",{'egreso_detalle_ls': egreso_detalle1,'buscafecha': buscarfechaform})
 
 @login_required(None, "", 'login')
 def crear_egreso_detalle (request):
@@ -412,62 +455,25 @@ def modificar_egreso_detalle (request,id):
     return render(request, "egreso_detalle/modificar_egreso_detalle.html",{'egreso_detalle_ls':egreso_detalleForm})
 
 
-##----------------------------- INGRESO CABECERA--------------##
-
-@login_required(None, "", 'login')
-def consultar_ingreso_cabecera (request):
-    ingreso_cabecera1 = ingreso_cabecera.objects.all()
-    return render(request, "ingreso_cabecera/consultar_ingreso_cabecera.html",{'ingreso_cabecera': ingreso_cabecera1})
-
-@login_required(None, "", 'login')
-def crear_ingreso_cabecera (request):
-    if request.method == "POST" :
-        ingresocaForm = Ingreso_cabeceraForm ( request.POST )
-        if ingresocaForm.is_valid():
-            ingresocaForm.save()
-            return redirect( 'consultar_ingreso_cabecera' )
-        else :
-            ingresocaForm = Ingreso_cabeceraForm ()
-    else :
-        ingresocaForm = Ingreso_cabeceraForm ()
-    return render(request, "ingreso_cabecera/crear_ingreso_cabecera.html",{'ingreso_cabecera_c': ingresocaForm})
-
-@login_required(None, "", 'login')
-def eliminar_ingreso_cabecera (request,id):
-    if request.method == "POST":
-        ingreso_cabecera1 = get_object_or_404(ingreso_cabecera, pk=id)
-        ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST or None, instance=ingreso_cabecera1)
-        if ingreso_cabeceraForm.is_valid():
-            ingreso_cabecera1.estado = 0
-            ingreso_cabecera1.save()
-            return redirect('consultar_ingreso_cabecera')
-    else:
-        ingreso_cabecera1 = get_object_or_404(ingreso_cabecera, pk=id)
-        ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST or None, instance=ingreso_cabecera1)
-    return render(request, "ingreso_cabecera/eliminar_ingreso_cabecera.html",{'ingreso_cabecera_e': ingreso_cabeceraForm})
-
-@login_required(None, "", 'login')
-def modificar_ingreso_cabecera (request,id):
-    if request.method == "POST":
-        ingreso_cabecera1 = get_object_or_404(ingreso_cabecera, pk=id)
-        ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST or None, instance=ingreso_cabecera1)
-        if ingreso_cabeceraForm.is_valid():
-            ingreso_cabeceraForm.save()
-            return redirect('consultar_ingreso_cabecera')
-        else:
-            ingreso_cabeceraForm = Ingreso_cabeceraForm(instance=ingreso_cabecera1)
-    else:  ##GET
-        ingreso_cabecera1 = get_object_or_404(ingreso_cabecera, pk=id)
-        ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST or None, instance=ingreso_cabecera1)
-    return render(request, "ingreso_cabecera/modificar_ingreso_cabecera.html",{'ingreso_cabecera_m': ingreso_cabeceraForm})
-
 
 ##----------------------------- INGRESO DETALLE--------------##
 
 @login_required(None, "", 'login')
 def  consultar_ingreso_detalle (request):
-    ingreso_detalle1 = ingreso_detalle.objects.all()
-    return render(request, "ingreso_detalle/consultar_ingreso_detalle.html",{'ingreso_detalle_ls':ingreso_detalle1})
+    buscarfechaform = BuscarFecha ()
+    ingreso_detalle1 = None
+
+    if request.method == "POST" :
+        buscarfechaform = BuscarFecha ( request.POST or None )
+        if buscarfechaform.is_valid () :
+            desde = buscarfechaform.cleaned_data['desde']
+            hasta = buscarfechaform.cleaned_data['hasta']
+
+            ingreso_detalle1 = ingreso_detalle.objects.filter ( fecha_creacion__range=(desde , hasta) )
+    else :
+        ingreso_detalle1 = ingreso_detalle.objects.all()
+
+    return render(request, "ingreso_detalle/consultar_ingreso_detalle.html",{'ingreso_detalle_ls':ingreso_detalle1,'buscafecha':buscarfechaform})
 
 @login_required(None, "", 'login')
 def crear_ingreso_detalle (request):
@@ -959,3 +965,66 @@ def modificar_marca (request,id):
         marca1 = get_object_or_404(Marca, pk=id)
         marcaForm = MarcaForm(request.POST or None, instance=marca1)
     return render(request, "marca/modificar_marca.html",{'marca_m': marcaForm})
+
+
+##----------------------------- INGRESO CABECERA--------------##
+
+@login_required(None, "", 'login')
+def consultar_ingreso_cabecera (request):
+    buscarbodeganombreform = BuscarCod ()
+    Ingreso = None
+
+    if request.method == "POST" :
+        buscarbodeganombreform = BuscarCod ( request.POST or None )
+        if buscarbodeganombreform.is_valid () :
+            codigo = buscarbodeganombreform.cleaned_data['codigo']
+            Ingreso = ingreso_cabecera.objects.filter ( codigo_documento_eg__iendswith=codigo )
+    else :
+        Ingreso = ingreso_cabecera.objects.all()
+
+    return render(request, "ingreso_cabecera/consultar_ingreso_cabecera.html",{'ingre_consul':Ingreso, 'buscarcod': buscarbodeganombreform})
+
+@login_required(None, "", 'login')
+def crear_ingreso_cabecera(request):
+    if request.method == "POST" :
+        ingresocaForm = Ingreso_cabeceraForm(request.POST)
+        if ingresocaForm.is_valid () :
+            ingresocaForm.save ()
+            return redirect ('consultar_ingreso_cabecera')
+        else :
+            ingresocaForm = Ingreso_cabeceraForm()
+    else :
+        ingresocaForm = Ingreso_cabeceraForm()
+
+    return render(request,"ingreso_cabecera/crear_ingreso_cabecera.html",{'ingreso_cabecera_c':ingresocaForm})
+
+@login_required(None, "", 'login')
+def eliminar_ingreso_cabecera (request,id):
+    if request.method == "POST":
+        ingreso_cabecera1 = get_object_or_404(ingreso_cabecera, pk=id)
+        ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST or None, instance=ingreso_cabecera1)
+        if ingreso_cabeceraForm.is_valid():
+            ingreso_cabecera1.estado = 0
+            ingreso_cabecera1.save()
+            return redirect('consultar_ingreso_cabecera')
+    else:
+        ingreso_cabecera1 = get_object_or_404(ingreso_cabecera, pk=id)
+        ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST or None, instance=ingreso_cabecera1)
+    return render(request, "ingreso_cabecera/eliminar_ingreso_cabecera.html",{'ingreso_cabecera_e': ingreso_cabeceraForm})
+
+@login_required(None, "", 'login')
+def modificar_ingreso_cabecera (request,id):
+    if request.method == "POST":
+        ingreso_cabecera1 = get_object_or_404(ingreso_cabecera, pk=id)
+        ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST or None, instance=ingreso_cabecera1)
+        if ingreso_cabeceraForm.is_valid():
+            ingreso_cabeceraForm.save()
+            return redirect('consultar_ingreso_cabecera')
+        else:
+            ingreso_cabeceraForm = Ingreso_cabeceraForm(instance=ingreso_cabecera1)
+    else:  ##GET
+        ingreso_cabecera1 = get_object_or_404(ingreso_cabecera, pk=id)
+        ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST or None, instance=ingreso_cabecera1)
+    return render(request, "ingreso_cabecera/modificar_ingreso_cabecera.html",{'ingreso_cabecera_m': ingreso_cabeceraForm})
+
+

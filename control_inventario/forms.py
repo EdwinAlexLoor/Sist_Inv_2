@@ -3,7 +3,15 @@ from django import forms
 from .models import CategoriaBodega, bodega, Categoria_producto,Marca, rol_persona, ingreso_cabecera, Egreso_cabecera,\
     Persona, producto, Devolucion, proveedor,Bodega_producto, ingreso_detalle, Egreso_detalle, ciudad
 
-class BuscarRolPersonaForm(forms.Form):
+
+class BuscarNombreProductoForm ( forms.Form ) :
+    nombre = forms.CharField ( label="Nombre Producto" , required=True )
+
+class BuscarRucProveedorForm(forms.Form):
+
+    ruc = forms.CharField (label= "Ruc",required=True)
+
+class BuscarFecha(forms.Form):
     desde = forms.DateTimeField(label="Desde", required=True, widget=forms.DateInput(format=('%Y-%m-%d'),
                                                                                      attrs={
                                                                                          'placeholder': 'Select a date',
@@ -26,6 +34,20 @@ class BuscarPersonaForm(forms.Form):
                                                                                          'placeholder': 'Select a date',
                                                                                          'type': 'date', 'size': 40}))
 
+class BuscarNombreFecha(forms.Form):
+    desde = forms.DateTimeField ( label="Desde" , required=True , widget=forms.DateInput ( format=('%Y-%m-%d') ,
+                                                                                           attrs={
+                                                                                               'placeholder' : 'Select a date' ,
+                                                                                               'type' : 'date' ,
+                                                                                               'size' : 40} ) )
+
+    hasta = forms.DateTimeField ( label="Hasta" , required=True , widget=forms.DateInput ( format=('%Y-%m-%d') ,
+                                                                                           attrs={
+                                                                                               'placeholder' : 'Select a date' ,
+                                                                                               'type' : 'date' ,
+                                                                                               'size' : 40} ) )
+
+    nombre = forms.CharField (label= "Nombre", required=True)
 
 class Categoria_bodegaForm (ModelForm):
     class Meta:

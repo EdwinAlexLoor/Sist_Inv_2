@@ -3,13 +3,76 @@ from django.db.models import Q
 from django.shortcuts import render , HttpResponse , redirect , get_object_or_404
 from .forms import  PersonaForm , BodegaForm, Rol_personaForm, Categoria_productoForm, Bodega_productoForm, \
     DevolucionForm, Egreso_cabeceraForm, MarcaForm, Egreso_detalleForm, Ingreso_cabeceraForm, Ingreso_detalleForm, \
-    ProductoForm, ProveedorForm, Categoria_bodegaForm, BuscarPersonaForm, BuscarRolPersonaForm, CiudadForm
+    ProductoForm, ProveedorForm, Categoria_bodegaForm, BuscarPersonaForm, BuscarFecha, \
+    CiudadForm, BuscarNombreFecha,BuscarRucProveedorForm,BuscarNombreProductoForm
+
 from .models import Persona, rol_persona, bodega, Categoria_producto, Bodega_producto, \
     Devolucion, Egreso_cabecera, Marca, Egreso_detalle, ingreso_cabecera, ingreso_detalle, producto , \
     proveedor, CategoriaBodega, ciudad
 
 
+import io
+from django.http import FileResponse
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import cm, inch
+from reportlab.pdfgen import canvas
+
+#from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login
+from reportlab.platypus import TableStyle, Table, SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.enums import TA_JUSTIFY, TA_RIGHT, TA_CENTER, TA_LEFT
+
+
 # Create your views here.
+
+
+@login_required(None, "", 'login')
+def exportarListaPersonaPdf(request):
+    # Create a file-like buffer to receive PDF data.
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="lista_personas.pdf"'
+
+    buffer = io.BytesIO()
+
+    doc = SimpleDocTemplate(buffer,
+                            rightMargin=inch / 4,
+                            leftMargin=inch / 4,
+                            topMargin=inch / 2,
+                            bottomMargin=inch / 4,
+                            pagesize=A4)
+    styles = getSampleStyleSheet()
+    styles.add(ParagraphStyle(name='centered', alignment=TA_CENTER))
+    styles.add(ParagraphStyle(name='RightAlign', fontName='Arial', align=TA_RIGHT))
+
+    personas = []
+    styles = getSampleStyleSheet()
+    header = Paragraph("     Reporte de Personas", styles['Heading1'])
+    personas.append(header)
+
+
+    headings = ('Id', 'Nombre', 'Apellido', 'Edad', 'Direccion', 'Cedula', 'Correo')
+    allpersonas = [(c.id, c.nombre, c.apellido, c.edad, c.direccion, c.cedula, c.correo) for c in Persona.objects.all()
+]
+    print
+    allpersonas
+
+    t = Table([headings] + allpersonas)
+    t.setStyle(TableStyle(
+        [
+            ('GRID', (0, 0), (9, -1), 1, colors.springgreen),
+            ('LINEBELOW', (0, 0), (-1, 0), 2, colors.springgreen),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.springgreen)
+        ]
+    ))
+    personas.append(t)
+    doc.build(personas)
+    response.write(buffer.getvalue())
+    buffer.close()
+    return response
+
+
 def saludo( request ) :
     return HttpResponse ( "Hola Mundo" )
 
@@ -127,8 +190,21 @@ def modificar_bodega_producto (request,id):
 
 @login_required(None, "", 'login')
 def consultar_categoria_producto (request):
-    categoria_producto1 = Categoria_producto.objects.all()
-    return render(request, "categoria_producto/consultar_categoria_producto.html",{'categoria_producto_ls': categoria_producto1})
+    buscarpersonaform = BuscarNombreFecha ()
+    categoriaproductoform = None
+
+    if request.method == "POST" :
+        buscarpersonaform = BuscarNombreFecha ( request.POST or None )
+        if buscarpersonaform.is_valid () :
+            desde = buscarpersonaform.cleaned_data['desde']
+            hasta = buscarpersonaform.cleaned_data['hasta']
+            nombre = buscarpersonaform.cleaned_data['nombre']
+
+            categoriaproductoform = Categoria_producto.objects.filter (
+                Q ( nombre__startswith=nombre ) & Q ( fecha_creacion__range=(desde , hasta) ) )
+    else :
+         categoriaproductoform = Categoria_producto.objects.all()
+    return render(request, "categoria_producto/consultar_categoria_producto.html",{'categoria_producto_ls': categoriaproductoform, 'buscarfechanombre': buscarpersonaform})
 
 @login_required(None, "", 'login')
 def crear_categoria_producto (request):
@@ -179,8 +255,20 @@ def modificar_categoria_producto (request,id):
 
 @login_required(None, "", 'login')
 def consultar_devolucion(request):
-    devolucion1 = Devolucion.objects.all()
-    return render(request, "devolucion/consultar_devolucion.html",{'devolucion_ls': devolucion1})
+    buscarfechaform = BuscarFecha ()
+    devolucion = None
+
+    if request.method == "POST" :
+        buscarfechaform = BuscarFecha ( request.POST or None )
+        if buscarfechaform.is_valid () :
+            desde = buscarfechaform.cleaned_data['desde']
+            hasta = buscarfechaform.cleaned_data['hasta']
+
+            devolucion = Devolucion.objects.filter ( fecha_creacion__range=(desde , hasta) )
+    else :
+        devolucion = Devolucion.objects.all ()
+    #devolucion1 = Devolucion.objects.all()
+    return render(request, "devolucion/consultar_devolucion.html",{'devolucion_ls': devolucion,'buscarfecha': buscarfechaform})
 
 @login_required(None, "", 'login')
 def crear_devolucion(request):
@@ -238,12 +326,12 @@ def crear_egreso_cabecera (request):
         egreso_cabeceraForm = Egreso_cabeceraForm(request.POST)
         if egreso_cabeceraForm.is_valid():
             egreso_cabeceraForm.save()
-            return redirect('consultar_egreso_cabecera')
+            return redirect ('consultar_egreso_cabecera')
         else:
             egreso_cabeceraForm = Egreso_cabeceraForm()
     else:
          egreso_cabeceraForm = Egreso_cabeceraForm ()
-    return render(request, "egreso_cabecera/crear_egreso_cabecera.html",{'egreso_cabecera_ls': egreso_cabeceraForm})
+    return render(request, "egreso_cabecera/crear_egreso_cabecera.html",{'egreso_cabecera_c': egreso_cabeceraForm})
 
 def eliminar_egreso_cabecera (request,id):
     if request.method == "POST":
@@ -256,7 +344,7 @@ def eliminar_egreso_cabecera (request,id):
     else:
         egreso_cabecera1 = get_object_or_404(Egreso_cabecera, pk=id)
         egreso_cabeceraForm = Egreso_cabeceraForm(request.POST or None, instance=egreso_cabecera1)
-    return render(request, "egreso_cabecera/eliminar_egreso_cabecera.html",{'egreso_cabecera_ls':egreso_cabeceraForm})
+    return render(request, "egreso_cabecera/eliminar_egreso_cabecera.html",{'egreso_cabecera_e':egreso_cabeceraForm})
 
 @login_required(None, "", 'login')
 def modificar_egreso_cabecera (request,id):
@@ -271,7 +359,7 @@ def modificar_egreso_cabecera (request,id):
     else:  ##GET
         egreso_cabecera1 = get_object_or_404(Egreso_cabecera, pk=id)
         egreso_cabeceraForm = Egreso_cabeceraForm(request.POST or None, instance=egreso_cabecera1)
-    return render(request, "egreso_cabecera/modificar_egreso_cabecera.html",{'egreso_cabecera_ls':egreso_cabeceraForm})
+    return render(request, "egreso_cabecera/modificar_egreso_cabecera.html",{'egreso_cabecera_m':egreso_cabeceraForm})
 
 
 ##----------------------------- EGRESO DETALLE --------------##
@@ -333,16 +421,16 @@ def consultar_ingreso_cabecera (request):
 
 @login_required(None, "", 'login')
 def crear_ingreso_cabecera (request):
-    if request.method == "POST":
-        ingreso_cabeceraForm = Ingreso_cabeceraForm(request.POST)
-        if ingreso_cabeceraForm.is_valid():
-            ingreso_cabeceraForm.save()
-            return redirect('consultar_ingreso_cabecera')
-        else:
-          ingreso_cabeceraForm = Ingreso_cabeceraForm()
-    else:
-         ingreso_cabeceraForm = Ingreso_cabeceraForm ()
-    return render(request, "ingreso_cabecera/crear_ingreso_cabecera.html",{'ingreso_cabecera_c': ingreso_cabeceraForm})
+    if request.method == "POST" :
+        ingresocaForm = Ingreso_cabeceraForm ( request.POST )
+        if ingresocaForm.is_valid():
+            ingresocaForm.save()
+            return redirect( 'consultar_ingreso_cabecera' )
+        else :
+            ingresocaForm = Ingreso_cabeceraForm ()
+    else :
+        ingresocaForm = Ingreso_cabeceraForm ()
+    return render(request, "ingreso_cabecera/crear_ingreso_cabecera.html",{'ingreso_cabecera_c': ingresocaForm})
 
 @login_required(None, "", 'login')
 def eliminar_ingreso_cabecera (request,id):
@@ -428,16 +516,17 @@ def modificar_ingreso_detalle (request,id):
 
 @login_required(None, "", 'login')
 def consultar_persona( request ) :
-    buscarpersonaform = BuscarPersonaForm()
+    buscarpersonaform = BuscarNombreFecha()
     persona = None
 
     if request.method =="POST":
-        buscarpersonaform = BuscarPersonaForm(request.POST or None)
+        buscarpersonaform = BuscarNombreFecha(request.POST or None)
         if buscarpersonaform.is_valid():
             desde = buscarpersonaform.cleaned_data['desde']
             hasta = buscarpersonaform.cleaned_data['hasta']
+            nombre = buscarpersonaform.cleaned_data['nombre']
 
-            persona = Persona.objects.filter ( fecha_creacion__range=(desde , hasta) )
+            persona = Persona.objects.filter (Q(nombre__startswith=nombre) & Q(fecha_creacion__range=(desde, hasta)))
     else:
         persona= Persona.objects.all ()
 
@@ -494,8 +583,18 @@ def modificar_persona( request ,id ):
 
 @login_required(None, "", 'login')
 def consultar_producto(request):
-    producto1 = producto.objects.all()
-    return render(request, "producto/consultar_producto.html",{'producto_ls': producto1})
+    buscarnombreproductoform = BuscarNombreProductoForm ()
+    Producto = None
+
+    if request.method == "POST" :
+        buscarnombreproductoform = BuscarNombreProductoForm ( request.POST or None )
+        if buscarnombreproductoform.is_valid () :
+            nombre = buscarnombreproductoform.cleaned_data['nombre']
+            Producto = producto.objects.filter ( nombre__icontains=nombre  )
+    else :
+        Producto = producto.objects.all ()
+    #producto1 = producto.objects.all()
+    return render(request, "producto/consultar_producto.html",{'producto_ls': Producto, 'buscarproducto': buscarnombreproductoform})
 
 @login_required(None, "", 'login')
 def crear_producto(request):
@@ -544,8 +643,18 @@ def modificar_producto(request,id):
 
 @login_required(None, "", 'login')
 def consultar_proveedor(request):
-    proveedor1 = proveedor.objects.all()
-    return render(request, "proveedor/consultar_proveedor.html",{'proveedor_ls': proveedor1})
+    buscarproveedorrucform = BuscarRucProveedorForm ()
+    proveedor1 = None
+
+    if request.method == "POST" :
+        buscarproveedorrucform = BuscarRucProveedorForm ( request.POST or None )
+        if buscarproveedorrucform.is_valid () :
+            ruc = buscarproveedorrucform.cleaned_data['ruc']
+            proveedor1 = proveedor.objects.filter ( ruc__icontains=ruc )
+    else :
+        proveedor1 = proveedor.objects.all ()
+    #proveedor1 = proveedor.objects.all()
+    return render(request, "proveedor/consultar_proveedor.html",{'proveedor_ls': proveedor1, 'buscarruc': buscarproveedorrucform})
 
 @login_required(None, "", 'login')
 def crear_proveedor(request):
@@ -657,8 +766,22 @@ def modificar_rol_persona (request,id):
 
 @login_required(None, "", 'login')
 def consultar_ciudad( request ) :
-    Ciudad = ciudad.objects.all()
-    return render ( request , "ciudad/consultar_ciudad.html",{'ciudad_consul': Ciudad} )
+    buscarfechaform = BuscarFecha()
+    Ciudad = None
+
+    if request.method == "POST" :
+        buscarfechaform = BuscarFecha ( request.POST or None )
+        if buscarfechaform.is_valid () :
+            desde = buscarfechaform.cleaned_data['desde']
+            hasta = buscarfechaform.cleaned_data['hasta']
+
+
+            Ciudad = ciudad.objects.filter ( fecha_creacion__range=(desde , hasta) )
+    else :
+        Ciudad = ciudad.objects.all ()
+
+    #Ciudad = ciudad.objects.all()
+    return render ( request , "ciudad/consultar_ciudad.html",{'ciudad_consul': Ciudad, 'buscarfecha': buscarfechaform } )
 
 @login_required(None, "", 'login')
 def crear_ciudad( request ) :
@@ -683,16 +806,17 @@ def eliminar_ciudad( request, id ) :
         if ciudadform.is_valid():
             Ciudad.estado = 0
             Ciudad.save()
-            return redirect('consultar_categoria_bodega')
+            return redirect('consultar_ciudad')
     else:
         Ciudad = get_object_or_404(ciudad, pk=id)
-        ciudadform = ProductoForm(request.POST or None, instance=Ciudad)
+        ciudadform = CiudadForm(request.POST or None, instance=Ciudad)
 
 
     return render ( request , "ciudad/eliminar_ciudad.html",{'ciudad_e': ciudadform} )
 
 @login_required(None, "", 'login')
 def modificar_ciudad( request, id ) :
+
     if request.method == "POST" :
         Ciudad = get_object_or_404 ( ciudad , pk=id )
         ciudadform = CiudadForm ( request.POST or None , instance=Ciudad )
@@ -711,8 +835,22 @@ def modificar_ciudad( request, id ) :
 
 @login_required(None, "", 'login')
 def consultar_categoria_bodega (request):
-    categoriabodega = CategoriaBodega.objects.all()
-    return render(request, "categoria_bodega/consultar_categoria_bodega.html",{'categoria_bodega_ls': categoriabodega})
+    buscarpersonaform = BuscarNombreFecha ()
+    categoriabodega = None
+
+    if request.method == "POST" :
+        buscarpersonaform = BuscarNombreFecha ( request.POST or None )
+        if buscarpersonaform.is_valid () :
+            desde = buscarpersonaform.cleaned_data['desde']
+            hasta = buscarpersonaform.cleaned_data['hasta']
+            nombre = buscarpersonaform.cleaned_data['nombre']
+
+            categoriabodega = CategoriaBodega.objects.filter (
+                Q ( nombre__startswith=nombre ) & Q ( fecha_creacion__range=(desde , hasta) ) )
+    else :
+        categoriabodega = CategoriaBodega.objects.all ()
+    #categoriabodega = CategoriaBodega.objects.all()
+    return render(request, "categoria_bodega/consultar_categoria_bodega.html",{'categoria_bodega_ls': categoriabodega, 'buscarfechanombre': buscarpersonaform})
 
 @login_required(None, "", 'login')
 def crear_categoria_bodega(request):
@@ -739,7 +877,7 @@ def eliminar_categoria_bodega(request,id):
             return redirect('consultar_categoria_bodega')
     else:
         categoriabodega1 = get_object_or_404(CategoriaBodega, pk=id)
-        categoriabodegaform = ProductoForm(request.POST or None, instance=categoriabodega1)
+        categoriabodegaform = Categoria_bodegaForm(request.POST or None, instance=categoriabodega1)
 
     return render(request, "categoria_bodega/eliminar_categoria_bodega.html",{'categoria_bodega_elim': categoriabodegaform})
 
@@ -764,8 +902,21 @@ def modificar_categoria_bodega(request,id):
 
 @login_required(None, "", 'login')
 def  consultar_marca(request):
-    marca1 = Marca.objects.all()
-    return render(request, "marca/consultar_marca.html",{'marca_ls': marca1})
+    buscarfechaform = BuscarFecha ()
+    marca = None
+
+    if request.method == "POST" :
+        buscarfechaform = BuscarFecha ( request.POST or None )
+        if buscarfechaform.is_valid () :
+            desde = buscarfechaform.cleaned_data['desde']
+            hasta = buscarfechaform.cleaned_data['hasta']
+
+            marca = Marca.objects.filter ( fecha_creacion__range=(desde , hasta) )
+    else :
+        marca = Marca.objects.all ()
+
+    #marca1 = Marca.objects.all()
+    return render(request, "marca/consultar_marca.html",{'marca_ls': marca, 'buscarfecha': buscarfechaform} )
 
 @login_required(None, "", 'login')
 def crear_marca (request):
@@ -807,4 +958,4 @@ def modificar_marca (request,id):
     else:  ##GET
         marca1 = get_object_or_404(Marca, pk=id)
         marcaForm = MarcaForm(request.POST or None, instance=marca1)
-    return render(request, "marca/modificar_marca.html",{'marca_ls': marcaForm})
+    return render(request, "marca/modificar_marca.html",{'marca_m': marcaForm})

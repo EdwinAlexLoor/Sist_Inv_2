@@ -11,6 +11,7 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/headers/">
 
 
+
     <!-- Bootstrap core CSS -->
     {% load static %}
     <link href="{% static '/dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -323,7 +324,12 @@
             <img class="mb-4" src="{% static 'portada_alcos.jpeg' %}" alt="" width="1080" height="300">
         </div>
     </main>
-    <div class="b-example-divider py-lg-3"></div>
+
+
+    <div class="b-example-divider text-center fst-italic "><h1>Bienvenidos</h1></div>
+
+
+
     {% block inicio %}
     {% endblock %}
 
@@ -340,6 +346,10 @@
 
 {% load static %}
 <script src="{% static '/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+
+
+
 
 
 </body>

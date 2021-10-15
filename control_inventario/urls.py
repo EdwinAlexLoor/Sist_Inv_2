@@ -101,8 +101,8 @@ urlpatterns = [
 
     path ( 'consultar_ciudad/' , views.consultar_ciudad , name="consultar_ciudad" ) ,
     path ( 'crear_ciudad/' , views.crear_ciudad , name="crear_ciudad" ) ,
-    path ( 'eliminar_ciudad/' , views.eliminar_ciudad , name="eliminar_ciudad" ) ,
-    path ( 'modificar_ciudad/' , views.modificar_ciudad , name="modificar_ciudad" ) ,
+    path ( 'eliminar_ciudad/<int:id>' , views.eliminar_ciudad , name="eliminar_ciudad" ) ,
+    path ( 'modificar_ciudad/<int:id>' , views.modificar_ciudad , name="modificar_ciudad" ) ,
 
     ##----------- Ruta Para _categoria_bodega -----------##
 

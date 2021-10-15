@@ -158,7 +158,7 @@ class Egreso_cabecera ( models.Model ) :
     estado = models.IntegerField ( default=1 )
 
     class Meta :
-        db_table = "inv_cabecera_egreso"
+        db_table = "inv_egreso_cabecera"
         verbose_name = "Egreso Cabecera"
         verbose_name_plural = "Egresos Cabeceras"
         ordering = ['fecha_creacion']

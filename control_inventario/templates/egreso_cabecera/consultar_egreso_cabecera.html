@@ -24,9 +24,9 @@
 
         <div>
             {#            right#}
-            <form action="{% url 'consultar_ingreso_cabecera' %}" method="post">
+            <form action="{% url 'consultar_egreso_cabecera' %}" method="post">
                 {% csrf_token %}
-                {{ buscarpersona.as_table }}
+                {{ buscarfecha.as_table }}
                 <button type="submit">
                     <svg class="bi me-2" width="40" height="20">
                         <use xlink:href="#bi bi-search"/>
